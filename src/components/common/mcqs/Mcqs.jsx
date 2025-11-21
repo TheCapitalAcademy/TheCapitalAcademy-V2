@@ -410,7 +410,11 @@ const Mcqs = () => {
 																		<div className="row py-md-1	 mt-md-2 mt-1">
 																			<div className="col-md-8 col-12">
 																				<div className="title text-primary fw-bold">Explaination</div>
-																				<MathJax dynamic hideUntilTypeset="first" style={{ fontSize: "15.6px", whiteSpace: 'pre-line' }} className='pl-md-0'>{mcqs[index]?.explain}</MathJax>
+																				<div style={{ fontSize: "15.6px", whiteSpace: 'pre-line' }} className='pl-md-0'>
+																					<MathJax dynamic hideUntilTypeset="first">
+																						{mcqs[index]?.explain ? `$${mcqs[index]?.explain}$` : ''}
+																					</MathJax>
+																				</div>
 																				{!mcqs[index]?.explain && <p>Not Available yet</p>}
 																			</div>
 																			<div className="col-md-4 col-12">
