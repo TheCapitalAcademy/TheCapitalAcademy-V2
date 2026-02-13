@@ -32,6 +32,7 @@ const seriesMcqSchema = new Schema(
         explain: { type: String, default: '' },
         imageUrl: { type: String, default: '' },
         questionImg: { type: String, default: '' },
+        aiGenerated: { type: Boolean, default: false }, // Track if explanation is AI-generated
         seriesId: { type: Schema.Types.ObjectId, ref: "Series", required: true },
         testId: { type: Schema.Types.ObjectId, ref: "Test" },
         createdBy: { type: Schema.Types.ObjectId, ref: "User" },

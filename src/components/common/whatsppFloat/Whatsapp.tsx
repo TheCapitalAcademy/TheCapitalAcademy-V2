@@ -31,7 +31,7 @@ const FloatingWhatsApp = () => {
   return (
     <AnimatePresence>
       {isVisible && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-6 left-6 z-50">
           {/* Expanded Menu */}
           <AnimatePresence>
             {isOpen && (
@@ -185,14 +185,14 @@ const FloatingWhatsApp = () => {
           {/* Tooltip */}
           {!isOpen && (
             <motion.div
-              initial={{ opacity: 0, x: 10 }}
+              initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="absolute right-20 top-1/2 -translate-y-1/2 px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+              className="absolute left-20 top-1/2 -translate-y-1/2 px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
               style={{ backgroundColor: "#1f2937", color: "#ffffff" }}
             >
               Need help? Chat with us!
               <div 
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 rotate-45"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 rotate-45"
                 style={{ backgroundColor: "#1f2937" }}
               />
             </motion.div>

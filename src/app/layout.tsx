@@ -77,16 +77,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
 
-
+//defines the root layout of the system
   return (
     <GlobalProvider>
       <html lang="en">
-        <HeroUIProvider>
-          <Toaster />
-          <body className={inter.className}>
+        <body className={inter.className}>
+          <HeroUIProvider>
+            <Toaster />
             {children}
-          </body>
-        </HeroUIProvider>
+          </HeroUIProvider>
+        </body>
       </html>
     </GlobalProvider>
   )

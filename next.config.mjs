@@ -17,7 +17,12 @@ const config = {
     typescript: {
       ignoreBuildErrors: true,
     },
+    webpack: (config, { isServer }) => {
+      // Disable filesystem cache to prevent cache corruption issues
+      config.cache = false;
+      return config;
+    },
   }
-  
+
   export default config
   

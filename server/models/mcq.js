@@ -53,6 +53,7 @@ const mcqSchema = new mongoose.Schema({
     },
     imageUrl: { type: String, default: null },
     questionImg: { type: String, default: null },
+    aiGenerated: { type: Boolean, default: false }, // Track if explanation is AI-generated
 });
 
 // question difficulty subject chapter category topic course

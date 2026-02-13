@@ -131,6 +131,7 @@ const authOptions: NextAuthOptions = {
             session.user.image = token.image;
             session.user.role = token.role;
             session.user.provider = token.provider;
+            session.user.accessToken = token.accessToken; // Add accessToken to user object
          }
 
          return session;

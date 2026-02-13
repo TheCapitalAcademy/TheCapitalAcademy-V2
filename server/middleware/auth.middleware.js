@@ -4,27 +4,53 @@ import jwt from 'jsonwebtoken'
 
 export const authUser = async (req, res, next) => {
     try {
-        // Pass the Express request object to getTokeclgn
-        const token = req.headers.authorization.split(' ')[1]
+        // Check if authorization header exists
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ message: "No authorization header provided" });
+        }
+
+        // Check if it's a Bearer token
+        if (!authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "Invalid authorization format. Expected: Bearer <token>" });
+        }
+
+        // Extract token
+        const token = authHeader.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        // Verify token
         const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET);
         console.log("decoded token is", decoded)
 
-        if (!token) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-
-        // Attach the decoded token (ser data) to the request
+        // Attach the decoded token (user data) to the request
         req.user = {
             id: decoded.userId,
             role: decoded.role,
             email: decoded.email
+            
         };
         next();
     } catch (error) {
         console.error("Authentication error:", error);
+        
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: "Invalid token" });
+        }
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: "Token expired" });
+        }
+        
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+
+// Neglects an admin if they are not given the proper requirements.
 
 export const isAdmin = async (req, res, next) => {
     if (!req.user || req.user.role.toLowerCase() !== 'admin') {

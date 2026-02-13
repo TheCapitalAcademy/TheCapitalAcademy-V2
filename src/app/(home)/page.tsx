@@ -6,6 +6,7 @@ import Pricing from '@/components/pricing/Pricing';
 import Features from '@/components/features/Features';
 import Reviews from '@/components/review/Review';
 import FAQAccordion from '@/components/Faqs/Faqs';
+import CapyAIChat from '@/components/home/CapyAIChat';
 import Axios from '@/lib/Axios';
 
 
@@ -31,12 +32,13 @@ export default async function Home() {
     return (
         <>
             <Header isActiveCourse={isActiveCourse} />
+            <Pricing />
             <HomeCard />
             <Boards />
-            <Pricing />
             <Features />
             <Reviews reviews={reviews} />
             <FAQAccordion />
+            <CapyAIChat />
         </>
     )
 }

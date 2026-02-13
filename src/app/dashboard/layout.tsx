@@ -20,6 +20,7 @@ import {
   Users,
   FileText,
   TrendingUp,
+  Sparkles,
 } from "lucide-react"
 import { easeInOut } from "framer-motion"
 import { Avatar, Button } from "@heroui/react"
@@ -84,6 +85,12 @@ const menuItems = [
     icon: Bell,
     path: "/dashboard/subscriptions",
     description: "Subscriptions",
+  },
+  {
+    text: "AI Settings",
+    icon: Sparkles,
+    path: "/dashboard/ai-settings",
+    description: "AI Configuration",
   },
   {
     text: "Profile",

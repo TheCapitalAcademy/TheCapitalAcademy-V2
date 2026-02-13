@@ -272,6 +272,7 @@ const Mcqs = () => {
 		saveMcqData();
 	}
 
+
 	const handleFlip = () => {
 		const da = mcqs[index];
 		if (da.lock) {
@@ -294,7 +295,7 @@ const Mcqs = () => {
 	};
 
 
-
+// This is the math library that will handle the LaTeX conversion.
 
 	return (
 		<MathJaxContext version={3} config={config}>

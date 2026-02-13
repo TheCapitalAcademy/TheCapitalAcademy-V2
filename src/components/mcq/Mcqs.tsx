@@ -22,7 +22,7 @@ import {
   useDisclosure,
   ScrollShadow,
 } from "@heroui/react"
-import { ArrowLeft, X, ChevronLeft, ChevronRight, Cloud } from "lucide-react"
+import { ArrowLeft, X, ChevronLeft, ChevronRight, Cloud, MessageCircle } from "lucide-react"
 import {
   Question,
   BookmarkSimple,
@@ -41,6 +41,7 @@ import {
 import FsLightbox from "fslightbox-react"
 import { MathJax, MathJaxContext } from "better-react-mathjax"
 import Timer from "./Timer"
+import AIChatPopup from "./AIChatPopup"
 import Axios from "@/lib/Axios"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
@@ -55,6 +56,10 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
   const [showMockModel, setShowMockModel] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingExplanation, setIsGeneratingExplanation] = useState(false);
+  const [generatedExplanations, setGeneratedExplanations] = useState(new Map());
+  const [aiTokenUsage, setAiTokenUsage] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
 
   const { data: session } = useSession()
@@ -136,6 +141,20 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
     }
   }
 
+  const fetchAITokenUsage = async () => {
+    try {
+      const response = await Axios.get("/api/v1/ai-settings")
+      if (response.data) {
+        setAiTokenUsage({
+          current: response.data.tokenUsage?.currentMonth || 0,
+          total: response.data.tokenQuota || 50000,
+        })
+      }
+    } catch (error) {
+      // Silently fail if AI settings not configured
+    }
+  }
+
   // Auto-save function
   const autoSaveProgress = async () => {
     if (isSeries) return
@@ -183,6 +202,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
 
   useEffect(() => {
     setLoading(false)
+    fetchAITokenUsage()
     return () => {
       if (autoSaveIntervalRef.current) {
         clearInterval(autoSaveIntervalRef.current)
@@ -391,8 +411,72 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
     const da = mcqs[index]
     if (da.lock) {
       setIsFlip(!isFlip)
+      // Check if we need to generate explanation
+      if (!isFlip && shouldGenerateExplanation(da)) {
+        generateExplanation(da._id)
+      }
     } else {
       showNotification("Attempt MCQ To See Explanation")
+    }
+  }
+
+  const shouldGenerateExplanation = (mcq) => {
+    return !mcq.explain || mcq.explain.trim() === '' || mcq.explain === 'Explanation Not provided'
+  }
+
+  const generateExplanation = async (mcqId) => {
+    // Check if already generated in this session
+    if (generatedExplanations.has(mcqId)) {
+      return
+    }
+
+    try {
+      setIsGeneratingExplanation(true)
+      const mcqType = isSeries ? 'SeriesMCQ' : 'MCQ'
+      
+      const response = await Axios.post('/api/v1/explanation/generate', {
+        mcqId,
+        mcqType
+      })
+
+      if (response.data.explanation) {
+        // Update the explanation in the current MCQ list
+        setMcqs(prevMcqs => {
+          const updated = [...prevMcqs]
+          const currentIndex = updated.findIndex(m => m._id === mcqId)
+          if (currentIndex !== -1) {
+            updated[currentIndex] = {
+              ...updated[currentIndex],
+              explain: response.data.explanation,
+              aiGenerated: true
+            }
+          }
+          return updated
+        })
+
+        // Store in generated cache
+        setGeneratedExplanations(prev => new Map(prev.set(mcqId, response.data.explanation)))
+
+        if (response.data.source === 'ai_generated') {
+          toast.success(`Explanation generated! (${response.data.tokensUsed} tokens used)`, { duration: 2000 })
+          // Refresh token usage after generation
+          fetchAITokenUsage()
+        }
+      }
+    } catch (error) {
+      console.error('Failed to generate explanation:', error)
+      
+      const errorData = error.response?.data
+      
+      if (errorData?.action === 'api_key_required') {
+        toast.error('Please configure your AI API key in settings', { duration: 4000 })
+      } else if (errorData?.error === 'Quota exceeded') {
+        toast.error('Monthly quota exceeded. Resets next month.', { duration: 4000 })
+      } else {
+        toast.error('Failed to generate explanation', { duration: 3000 })
+      }
+    } finally {
+      setIsGeneratingExplanation(false)
     }
   }
 
@@ -585,6 +669,11 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                       <h3 className="text-xl font-bold">
                         Question {index + 1}/{mcqs?.length}
                       </h3>
+                      {aiTokenUsage && (
+                        <Chip color="primary" variant="flat" size="sm">
+                          AI: {aiTokenUsage.current.toLocaleString()}/{aiTokenUsage.total.toLocaleString()} tokens
+                        </Chip>
+                      )}
                       {mcqs[index]?.info && (
                         <Chip color="secondary" variant="flat" className="capitalize">
                           {mcqs[index]?.info}
@@ -618,6 +707,11 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                 <CardHeader className="lg:hidden  flex-shrink-0">
                   <div className="w-full space-y-3">
                     <div className="flex items-center justify-between">
+                      {aiTokenUsage && (
+                        <Chip color="primary" variant="flat" size="sm">
+                          AI: {aiTokenUsage.current.toLocaleString()}/{aiTokenUsage.total.toLocaleString()}
+                        </Chip>
+                      )}
                       {mcqs[index]?.info && (
                         <Chip color="secondary" variant="flat" size="sm" className="capitalize">
                           {mcqs[index]?.info}
@@ -774,17 +868,49 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                                 </div>
                               }
                               <div className="w-full">
-                                <h5 className="text-base lg:text-lg font-semibold text-blue-600 mb-4">Explanation</h5>
-                                <Card className="bg-green-50 border-l-4 border-l-green-500">
-                                  <CardBody className="py-3 lg:py-4">
-                                    <MathJax dynamic
-                                      inline
-                                      className="text-sm lg:text-base leading-relaxed whitespace-pre-line"
-                                    >
-                                      {mcqs[index]?.explain || "Explanation not available yet"}
-                                    </MathJax>
-                                  </CardBody>
-                                </Card>
+                                <div className="flex items-center justify-between mb-4">
+                                  <h5 className="text-base lg:text-lg font-semibold text-blue-600">Explanation</h5>
+                                  {mcqs[index]?.aiGenerated && (
+                                    <Chip size="sm" color="secondary" variant="flat" className="text-xs">
+                                      AI Generated
+                                    </Chip>
+                                  )}
+                                </div>
+                                {isGeneratingExplanation ? (
+                                  <Card className="bg-blue-50 border-l-4 border-l-blue-500">
+                                    <CardBody className="py-3 lg:py-4">
+                                      <div className="flex flex-col items-center justify-center py-6">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3"></div>
+                                        <p className="text-sm text-gray-600">Generating explanation with AI...</p>
+                                        <p className="text-xs text-gray-500 mt-1">This may take a few seconds</p>
+                                      </div>
+                                    </CardBody>
+                                  </Card>
+                                ) : (
+                                  <Card className="bg-green-50 border-l-4 border-l-green-500">
+                                    <CardBody className="py-3 lg:py-4">
+                                      <MathJax dynamic
+                                        inline
+                                        className="text-sm lg:text-base leading-relaxed whitespace-pre-line"
+                                      >
+                                        {mcqs[index]?.explain || "Explanation not available yet"}
+                                      </MathJax>
+                                      {mcqs[index]?.explain && mcqs[index]?.explain !== "Explanation not available yet" && (
+                                        <div className="mt-4 pt-4 border-t border-green-200">
+                                          <Button
+                                            color="primary"
+                                            variant="flat"
+                                            size="sm"
+                                            onClick={() => setIsChatOpen(true)}
+                                            startContent={<MessageCircle size={16} />}
+                                          >
+                                            Chat More About This
+                                          </Button>
+                                        </div>
+                                      )}
+                                    </CardBody>
+                                  </Card>
+                                )}
                               </div>
                             </div>
                           )}
@@ -1345,6 +1471,17 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
           border-color: #ef4444 !important;
         }
       `}</style>
+
+      {/* AI Chat Popup */}
+      {mcqs[index] && (
+        <AIChatPopup
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          mcq={mcqs[index]}
+          mcqType={isSeries ? "SeriesMCQ" : "MCQ"}
+          onTokensUsed={fetchAITokenUsage}
+        />
+      )}
     </MathJaxContext>
   )
 }
