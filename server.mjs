@@ -1,4 +1,5 @@
 import { createServer } from 'http'
+import next from 'next'
 import express from 'express'
 import userRouter from './server/routes/users.js';
 import commonRouter from './server/routes/common.js';
@@ -30,7 +31,14 @@ dotenv.config({
   path: "./.env.local",
 }); // 👈 
 
+const dev = process.env.NODE_ENV !== 'production'
+const hostname = 'localhost'
 const port = parseInt(process.env.PORT || '8080', 10)
+
+// Initialize Next.js
+const app = next({ dev, hostname, port })
+const handle = app.getRequestHandler()
+
 const expressApp = express();
 
 const connectMongoDB = async () => {
@@ -42,8 +50,10 @@ const connectMongoDB = async () => {
   }
 };
 
-connectMongoDB();
-initCronJobs();
+// Prepare Next.js before starting the server
+app.prepare().then(() => {
+  connectMongoDB();
+  initCronJobs();
 
 // CORS configuration
 expressApp.use(cors({
@@ -81,11 +91,21 @@ expressApp.use("/api/v1/capy-ai", capyAiChatRouter);
 // error handler middleware
 expressApp.use(errorHandler);
 
+// Let Next.js handle all other routes
+expressApp.all('*', (req, res) => {
+  return handle(req, res)
+})
+
 const httpServer = createServer(expressApp);
 // setupSocket(httpServer);
 
 httpServer.listen(port, () => {
   console.log(
-    `> Backend API Server listening at http://localhost:${port}`
+    `> Server ready on http://localhost:${port}`
   )
+})
+
+}).catch((err) => {
+  console.error('Error starting server:', err)
+  process.exit(1)
 })

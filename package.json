@@ -7,7 +7,7 @@
     "dev:server": "cross-env NODE_OPTIONS='--trace-warnings' nodemon server.mjs",
     "build": "next build",
     "build:server": "next build && tsc  --project jsconfig.server.json",
-    "start": "next start",
+    "start": "node server.mjs",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start:server": "NODE_ENV=production node dist/server.mjs",
     "lint": "next lint",
