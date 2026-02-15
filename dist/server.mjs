@@ -1,4 +1,5 @@
 import { createServer } from 'http';
+import next from 'next';
 import express from 'express';
 import userRouter from './server/routes/users.js';
 import commonRouter from './server/routes/common.js';
@@ -26,7 +27,12 @@ import capyAiChatRouter from './server/routes/capyAiChat.js';
 dotenv.config({
     path: "./.env.local",
 }); // 👈 
+const dev = process.env.NODE_ENV !== 'production';
+const hostname = 'localhost';
 const port = parseInt(process.env.PORT || '8080', 10);
+// Initialize Next.js
+const app = next({ dev, hostname, port });
+const handle = app.getRequestHandler();
 const expressApp = express();
 const connectMongoDB = async () => {
     try {
@@ -37,41 +43,51 @@ const connectMongoDB = async () => {
         console.error('Error connecting to MongoDB:', error);
     }
 };
-connectMongoDB();
-initCronJobs();
-// CORS configuration
-expressApp.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-expressApp.use(express.json());
-expressApp.use(cookieParser());
-//routes start from here
-expressApp.use("/api/v1/users", userRouter);
-expressApp.use("/api/v1/common", commonRouter);
-expressApp.use("/api/v1/review", reviewRouter);
-expressApp.use("/api/v1/course", courseRouter);
-expressApp.use("/api/v1/referral", referalRouter);
-expressApp.use("/api/v1/purchase", PurchaseRouter);
-expressApp.use("/api/v1/progress", progressRouter);
-expressApp.use("/api/v1/mcq", mcqRouter);
-expressApp.use("/api/v1/planner", plannerRouter);
-expressApp.use("/api/v1/report", reportRouter);
-// series routes
-expressApp.use("/api/v1/series", seriesRouter);
-expressApp.use("/api/v1/payment", paymentRouter);
-expressApp.use("/api/v1/test", testRouter);
-// AI explanation routes
-expressApp.use("/api/v1/explanation", aiExplanationRouter);
-expressApp.use("/api/v1/ai-settings", aiSettingsRouter);
-expressApp.use("/api/v1/ai-chat", aiChatRouter);
-expressApp.use("/api/v1/capy-ai", capyAiChatRouter);
-// error handler middleware
-expressApp.use(errorHandler);
-const httpServer = createServer(expressApp);
-// setupSocket(httpServer);
-httpServer.listen(port, () => {
-    console.log(`> Backend API Server listening at http://localhost:${port}`);
+// Prepare Next.js before starting the server
+app.prepare().then(() => {
+    connectMongoDB();
+    initCronJobs();
+    // CORS configuration
+    expressApp.use(cors({
+        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    }));
+    expressApp.use(express.json());
+    expressApp.use(cookieParser());
+    //routes start from here
+    expressApp.use("/api/v1/users", userRouter);
+    expressApp.use("/api/v1/common", commonRouter);
+    expressApp.use("/api/v1/review", reviewRouter);
+    expressApp.use("/api/v1/course", courseRouter);
+    expressApp.use("/api/v1/referral", referalRouter);
+    expressApp.use("/api/v1/purchase", PurchaseRouter);
+    expressApp.use("/api/v1/progress", progressRouter);
+    expressApp.use("/api/v1/mcq", mcqRouter);
+    expressApp.use("/api/v1/planner", plannerRouter);
+    expressApp.use("/api/v1/report", reportRouter);
+    // series routes
+    expressApp.use("/api/v1/series", seriesRouter);
+    expressApp.use("/api/v1/payment", paymentRouter);
+    expressApp.use("/api/v1/test", testRouter);
+    // AI explanation routes
+    expressApp.use("/api/v1/explanation", aiExplanationRouter);
+    expressApp.use("/api/v1/ai-settings", aiSettingsRouter);
+    expressApp.use("/api/v1/ai-chat", aiChatRouter);
+    expressApp.use("/api/v1/capy-ai", capyAiChatRouter);
+    // error handler middleware
+    expressApp.use(errorHandler);
+    // Let Next.js handle all other routes
+    expressApp.all('*', (req, res) => {
+        return handle(req, res);
+    });
+    const httpServer = createServer(expressApp);
+    // setupSocket(httpServer);
+    httpServer.listen(port, () => {
+        console.log(`> Server ready on http://localhost:${port}`);
+    });
+}).catch((err) => {
+    console.error('Error starting server:', err);
+    process.exit(1);
 });
