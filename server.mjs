@@ -34,7 +34,6 @@ dotenv.config({
 const dev = process.env.NODE_ENV !== 'production'
 const port = parseInt(process.env.PORT || '8080', 10)
 
-// Initialize Next.js
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
@@ -49,10 +48,10 @@ const connectMongoDB = async () => {
   }
 };
 
-// Prepare Next.js before starting the server
 app.prepare().then(() => {
-  connectMongoDB();
-  initCronJobs();
+
+connectMongoDB();
+initCronJobs();
 
 // CORS configuration
 expressApp.use(cors({
@@ -90,8 +89,8 @@ expressApp.use("/api/v1/capy-ai", capyAiChatRouter);
 // error handler middleware
 expressApp.use(errorHandler);
 
-// Let Next.js handle all other routes
-expressApp.all('*', (req, res) => {
+// Let Next.js handle all other routes (Express 5 syntax)
+expressApp.all('{/*path}', (req, res) => {
   return handle(req, res)
 })
 
@@ -108,3 +107,4 @@ httpServer.listen(port, () => {
   console.error('Error starting server:', err)
   process.exit(1)
 })
+
