@@ -32,11 +32,10 @@ dotenv.config({
 }); // 👈 
 
 const dev = process.env.NODE_ENV !== 'production'
-const hostname = 'localhost'
 const port = parseInt(process.env.PORT || '8080', 10)
 
 // Initialize Next.js
-const app = next({ dev, hostname, port })
+const app = next({ dev })
 const handle = app.getRequestHandler()
 
 const expressApp = express();
