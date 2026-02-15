@@ -1,33 +1,16 @@
-import OpenAI from 'openai';
-import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 /**
- * AI Service abstraction layer
- * Supports multiple AI providers with BYO API Key model
+ * AI Service for Google Gemini
  */
 class AIService {
     constructor(provider, apiKey) {
+        if (provider !== 'gemini') {
+            throw new Error('Only Google Gemini is supported');
+        }
         this.provider = provider;
         this.apiKey = apiKey;
-        this.client = null;
-        this.initializeClient();
-    }
-
-    initializeClient() {
-        switch (this.provider) {
-            case 'openai':
-                this.client = new OpenAI({ apiKey: this.apiKey });
-                break;
-            case 'anthropic':
-                this.client = new Anthropic({ apiKey: this.apiKey });
-                break;
-            case 'gemini':
-                this.client = new GoogleGenerativeAI(this.apiKey);
-                break;
-            default:
-                throw new Error(`Unsupported AI provider: ${this.provider}`);
-        }
+        this.client = new GoogleGenerativeAI(this.apiKey);
     }
 
     /**
@@ -41,13 +24,7 @@ class AIService {
         const prompt = this.buildPrompt(question, options, correctOption, subject, difficulty);
 
         try {
-            if (this.provider === 'openai') {
-                return await this.generateWithOpenAI(prompt);
-            } else if (this.provider === 'anthropic') {
-                return await this.generateWithAnthropic(prompt);
-            } else if (this.provider === 'gemini') {
-                return await this.generateWithGemini(prompt);
-            }
+            return await this.generateWithGemini(prompt);
         } catch (error) {
             throw new Error(`AI generation failed: ${error.message}`);
         }
@@ -102,53 +79,6 @@ Rules:
 - Emojis must be exactly as shown
 
 Do not mention other options unless necessary for comparison. Focus on teaching the concept.`;
-    }
-
-    async generateWithOpenAI(prompt) {
-        const response = await this.client.chat.completions.create({
-            model: 'gpt-4o-mini', // Cost-effective model
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are an expert educator who provides clear, concise explanations for multiple-choice questions.'
-                },
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            temperature: 0.7,
-            max_tokens: 300, // Limit response length
-        });
-
-        return {
-            explanation: response.choices[0].message.content.trim(),
-            tokensUsed: response.usage.total_tokens,
-            model: response.model,
-        };
-    }
-
-    async generateWithAnthropic(prompt) {
-        const response = await this.client.messages.create({
-            model: 'claude-3-5-haiku-20241022', // Cost-effective model
-            max_tokens: 300,
-            temperature: 0.7,
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-        });
-
-        // Anthropic uses different token counting
-        const tokensUsed = response.usage.input_tokens + response.usage.output_tokens;
-
-        return {
-            explanation: response.content[0].text.trim(),
-            tokensUsed: tokensUsed,
-            model: response.model,
-        };
     }
 
     async generateWithGemini(prompt) {
@@ -215,13 +145,7 @@ Do not mention other options unless necessary for comparison. Focus on teaching 
      */
     async generateChatResponse(prompt) {
         try {
-            if (this.provider === 'openai') {
-                return await this.generateChatWithOpenAI(prompt);
-            } else if (this.provider === 'anthropic') {
-                return await this.generateChatWithAnthropic(prompt);
-            } else if (this.provider === 'gemini') {
-                return await this.generateChatWithGemini(prompt);
-            }
+            return await this.generateChatWithGemini(prompt);
         } catch (error) {
             throw new Error(`Chat generation failed: ${error.message}`);
         }
@@ -233,53 +157,7 @@ Do not mention other options unless necessary for comparison. Focus on teaching 
             messages: [
                 {
                     role: 'system',
-                    content: 'You are an expert educator helping students understand MCQ questions. Only answer questions related to the specific MCQ provided.'
-                },
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            temperature: 0.7,
-            max_tokens: 400,
-        });
-
-        return {
-            explanation: response.choices[0].message.content.trim(),
-            tokensUsed: response.usage.total_tokens,
-            model: response.model,
-        };
-    }
-
-    async generateChatWithAnthropic(prompt) {
-        const response = await this.client.messages.create({
-            model: 'claude-3-5-haiku-20241022',
-            max_tokens: 400,
-            temperature: 0.7,
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-        });
-
-        const tokensUsed = response.usage.input_tokens + response.usage.output_tokens;
-
-        return {
-            explanation: response.content[0].text.trim(),
-            tokensUsed: tokensUsed,
-            model: response.model,
-        };
-    }
-
-    async generateChatWithGemini(prompt) {
-        const { HarmCategory, HarmBlockThreshold } = await import('@google/generative-ai');
-        
-        const model = this.client.getGenerativeModel({ 
-            model: 'gemini-2.5-flash',
-            generationConfig: {
-                temperature: 0.7,
+                    contene: 0.7,
                 maxOutputTokens: 400,
                 topP: 0.95,
                 topK: 40,

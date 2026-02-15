@@ -8,11 +8,11 @@ const userAIConfigSchema = new mongoose.Schema({
         unique: true,
     },
     
-    // AI Provider Configuration
+    // AI Provider Configuration (Gemini only)
     aiProvider: {
         type: String,
-        enum: ['openai', 'anthropic', 'gemini', 'none'],
-        default: 'none',
+        enum: ['gemini', 'none'],
+        default: 'gemini',
     },
     
     // Encrypted API key (use encryption in production)

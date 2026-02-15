@@ -4,7 +4,7 @@ import AISettings from "@/components/dashboard/AISettings"
 
 export default function AISettingsPage() {
   return (
-    <div className="mx-auto py-8">
+    <div className="h-full -mt-4 -mx-2 lg:-mx-4">
       <AISettings />
     </div>
   )

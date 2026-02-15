@@ -1,314 +1,656 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardBody, CardHeader, Button, Input, Select, SelectItem, Progress, Chip, Divider } from "@heroui/react"
-import { Key, Cpu, TrendingUp, Settings, CheckCircle, AlertCircle } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import {
+  Button,
+  Input,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ScrollShadow,
+  Spinner,
+  useDisclosure,
+} from "@heroui/react"
+import {
+  Bot,
+  Send,
+  Settings,
+  Key,
+  CheckCircle,
+  ExternalLink,
+  X,
+  MessageCircle,
+  Lightbulb,
+  FileText,
+  Sparkle,
+  Trash2,
+  AlertTriangle,
+  ShieldCheck,
+  Zap,
+  Copy,
+  ChevronRight,
+} from "lucide-react"
 import Axios from "@/lib/Axios"
+import { useSession } from "next-auth/react"
 import { toast } from "react-hot-toast"
 
-const AISettings = () => {
-  const [loading, setLoading] = useState(true)
-  const [testing, setTesting] = useState(false)
-  const [config, setConfig] = useState(null)
-  const [formData, setFormData] = useState({
-    aiProvider: "gemini",
-    apiKey: "",
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+
+/* ─── Lightweight Markdown Renderer ─── */
+function formatMarkdown(text: string) {
+  const lines = text.split("\n")
+  const elements: React.ReactNode[] = []
+  let listItems: React.ReactNode[] = []
+  let listKey = 0
+
+  const flushList = () => {
+    if (listItems.length > 0) {
+      elements.push(
+        <ul key={`list-${listKey++}`} className="list-disc list-inside space-y-1 my-1.5 text-sm">
+          {listItems}
+        </ul>
+      )
+      listItems = []
+    }
+  }
+
+  const formatInline = (raw: string, key: number): React.ReactNode => {
+    const parts: React.ReactNode[] = []
+    const regex = /(\*\*(.+?)\*\*|\*(.+?)\*)/g
+    let lastIndex = 0
+    let match
+    while ((match = regex.exec(raw)) !== null) {
+      if (match.index > lastIndex) parts.push(raw.slice(lastIndex, match.index))
+      if (match[2]) parts.push(<strong key={`b-${key}-${match.index}`} className="font-semibold">{match[2]}</strong>)
+      else if (match[3]) parts.push(<em key={`i-${key}-${match.index}`}>{match[3]}</em>)
+      lastIndex = regex.lastIndex
+    }
+    if (lastIndex < raw.length) parts.push(raw.slice(lastIndex))
+    return parts.length > 0 ? parts : raw
+  }
+
+  lines.forEach((line, idx) => {
+    const trimmed = line.trimStart()
+    const bulletMatch = trimmed.match(/^(?:[\*\-•])\s+(.+)/)
+    if (bulletMatch) {
+      listItems.push(<li key={`li-${idx}`} className="leading-relaxed">{formatInline(bulletMatch[1], idx)}</li>)
+      return
+    }
+    const numMatch = trimmed.match(/^\d+[.)]\s+(.+)/)
+    if (numMatch) {
+      listItems.push(<li key={`li-${idx}`} className="leading-relaxed">{formatInline(numMatch[1], idx)}</li>)
+      return
+    }
+    flushList()
+    if (trimmed === "") { elements.push(<div key={`sp-${idx}`} className="h-1.5" />); return }
+    if (trimmed.startsWith("## ")) {
+      elements.push(<p key={`h-${idx}`} className="font-bold text-sm mt-2 mb-0.5">{formatInline(trimmed.slice(3), idx)}</p>)
+      return
+    }
+    if (trimmed.startsWith("# ")) {
+      elements.push(<p key={`h-${idx}`} className="font-bold text-[15px] mt-2 mb-0.5">{formatInline(trimmed.slice(2), idx)}</p>)
+      return
+    }
+    elements.push(<p key={`p-${idx}`} className="text-sm leading-relaxed">{formatInline(trimmed, idx)}</p>)
   })
+  flushList()
+  return elements
+}
+
+/* ─── Types ─── */
+interface Message {
+  role: "user" | "assistant"
+  content: string
+}
+
+/* ─── Main Component ─── */
+const AISettings = () => {
+  const { data: session, status } = useSession()
+
+  // Chat state
+  const [messages, setMessages] = useState<Message[]>([])
+  const [inputMessage, setInputMessage] = useState("")
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [currentStreamingMessage, setCurrentStreamingMessage] = useState("")
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Settings state
+  const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure()
+  const [config, setConfig] = useState<any>(null)
+  const [configLoading, setConfigLoading] = useState(true)
+  const [testing, setTesting] = useState(false)
+  const [apiKey, setApiKey] = useState("")
+
+  // Setup guide state
+  const [showSetupGuide, setShowSetupGuide] = useState(false)
+  const [setupStep, setSetupStep] = useState(0)
+
+  const hasKey = config?.hasApiKey
 
   useEffect(() => {
     fetchConfig()
   }, [])
 
+  useEffect(() => {
+    if (messages.length === 0 && status === "authenticated") {
+      setMessages([{
+        role: "assistant",
+        content: "Hi! I'm Capy AI, your MDCAT Biology tutor 🧬\n\nAsk me anything about biology topics — from cell biology to genetics, ecology to human physiology. I'm here to help you ace your MDCAT!",
+      }])
+    }
+  }, [status])
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages, currentStreamingMessage])
+
   const fetchConfig = async () => {
     try {
-      setLoading(true)
+      setConfigLoading(true)
       const response = await Axios.get("/api/v1/ai-settings")
       setConfig(response.data)
-      setFormData({
-        aiProvider: response.data.aiProvider || "gemini",
-        apiKey: "",
-      })
     } catch (error) {
-      toast.error("Failed to load AI settings")
+      // Config not set up yet
     } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleTestKey = async () => {
-    if (!formData.apiKey) {
-      toast.error("Please enter an API key")
-      return
-    }
-
-    try {
-      setTesting(true)
-      const response = await Axios.post("/api/v1/ai-settings/test-key", formData)
-      
-      if (response.data.success) {
-        toast.success("API key is valid! ✅")
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "API key validation failed")
-    } finally {
-      setTesting(false)
+      setConfigLoading(false)
     }
   }
 
   const handleSave = async () => {
-    if (!formData.apiKey) {
-      toast.error("Please enter an API key")
-      return
-    }
-
+    if (!apiKey) { toast.error("Please enter an API key"); return }
     try {
-      const response = await Axios.put("/api/v1/ai-settings/provider", formData)
-      toast.success("AI settings saved successfully!")
-      setFormData({ ...formData, apiKey: "" })
+      await Axios.put("/api/v1/ai-settings/provider", { aiProvider: "gemini", apiKey })
+      toast.success("API key saved successfully!")
+      setApiKey("")
       fetchConfig()
-    } catch (error) {
+      onSettingsClose()
+    } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to save settings")
     }
   }
 
+  const handleTestKey = async () => {
+    if (!apiKey) { toast.error("Please enter an API key"); return }
+    try {
+      setTesting(true)
+      const response = await Axios.post("/api/v1/ai-settings/test-key", { aiProvider: "gemini", apiKey })
+      if (response.data.success) toast.success("API key is valid! ✅")
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "API key validation failed")
+    } finally { setTesting(false) }
+  }
+
   const handleRemoveKey = async () => {
     if (!confirm("Are you sure you want to remove your API key?")) return
-
     try {
       await Axios.delete("/api/v1/ai-settings/provider")
       toast.success("API key removed")
       fetchConfig()
-    } catch (error) {
-      toast.error("Failed to remove API key")
+    } catch (error) { toast.error("Failed to remove API key") }
+  }
+
+  /* ─── Chat Logic ─── */
+  const sendMessage = async (messageText?: string) => {
+    const textToSend = messageText || inputMessage.trim()
+    if (!textToSend) return
+
+    if (!hasKey) {
+      toast.error("Please configure your API key first")
+      onSettingsOpen()
+      return
+    }
+
+    const userMessage: Message = { role: "user", content: textToSend }
+    setMessages((prev) => [...prev, userMessage])
+    setInputMessage("")
+    setIsStreaming(true)
+    setCurrentStreamingMessage("")
+
+    try {
+      const accessToken = (session as any)?.user?.accessToken
+      const response = await fetch(`${API_URL}/api/v1/capy-ai/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ message: textToSend, history: messages.slice(-6) }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || "Failed to send message")
+      }
+
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+      if (!reader) throw new Error("No response body")
+
+      let streamedContent = ""
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const chunk = decoder.decode(value)
+        for (const line of chunk.split("\n")) {
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6))
+              if (data.type === "chunk") {
+                streamedContent += data.content
+                setCurrentStreamingMessage(streamedContent)
+              } else if (data.type === "done") {
+                setMessages((prev) => [...prev, { role: "assistant", content: streamedContent }])
+                setCurrentStreamingMessage("")
+              } else if (data.type === "error") throw new Error(data.message)
+            } catch (e) { /* ignore parse errors */ }
+          }
+        }
+      }
+    } catch (error: any) {
+      console.error("Capy AI error:", error)
+      if (error.message.includes("Gemini required")) {
+        toast.error("Please configure Gemini in settings to use Capy AI")
+      } else if (error.message.includes("Quota exceeded")) {
+        toast.error("Monthly quota exceeded")
+      } else {
+        toast.error("Failed to send message")
+      }
+      setMessages((prev) => prev.slice(0, -1))
+      setCurrentStreamingMessage("")
+    } finally {
+      setIsStreaming(false)
+      inputRef.current?.focus()
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Loading AI settings...</p>
-        </div>
-      </div>
-    )
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage() }
   }
 
-  const usagePercentage = config?.usagePercentage || 0
-  const hasKey = config?.hasApiKey
+  const hasStartedChatting = messages.length > 1 || isStreaming
 
+  const setupSteps = [
+    {
+      title: "Go to Google AI Studio",
+      description: "Visit Google AI Studio to create your free API key",
+      action: (
+        <Button
+          color="primary"
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+          endContent={<ExternalLink size={16} />}
+          onClick={() => window.open("https://aistudio.google.com/app/apikey", "_blank")}
+        >
+          Open Google AI Studio
+        </Button>
+      ),
+    },
+    {
+      title: "Sign in with Google",
+      description: "Use your Google account to sign in. It's free — no credit card required.",
+    },
+    {
+      title: 'Click "Create API Key"',
+      description: "On the API keys page, click the button to generate a new key. Select any project or create one.",
+    },
+    {
+      title: "Copy your API Key",
+      description: 'Your key will look like: AIzaSy... — copy it and paste it in the API Key field below.',
+    },
+  ]
+
+  /* ─── Render ─── */
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold mb-2">AI Explanation Settings</h1>
-        <p className="text-gray-600">
-          Use your own AI API key to generate explanations for MCQs that don't have them
-        </p>
+    <>
+      {/* Inline animations */}
+      <style jsx global>{`
+        @keyframes capyFadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes capyPulse {
+          0%, 80%, 100% { opacity: 0.35; transform: scale(0.8); }
+          40% { opacity: 1; transform: scale(1); }
+        }
+        .capy-msg     { animation: capyFadeIn 0.3s ease-out both; }
+        .capy-dot     { animation: capyPulse 1.4s infinite both; }
+        .capy-dot:nth-child(2) { animation-delay: 0.2s; }
+        .capy-dot:nth-child(3) { animation-delay: 0.4s; }
+      `}</style>
+
+      <div className="flex flex-col h-[calc(100vh-5rem)] max-w-5xl mx-auto">
+        {/* ─── Header ─── */}
+        <div className="flex items-center justify-between px-4 lg:px-6 py-4 border-b border-gray-100 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#9b7abf] to-[#7c5fa3] flex items-center justify-center shadow-md">
+              <Bot size={20} className="text-white" />
+            </div>
+            <div>
+              <h1 className="font-semibold text-lg text-gray-900 leading-tight">Capy AI</h1>
+              <p className="text-xs text-gray-500 flex items-center gap-1">
+                {hasKey ? (
+                  <><span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> MDCAT Biology Tutor</>
+                ) : (
+                  <><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" /> API key required</>
+                )}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onSettingsOpen}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            title="Settings"
+          >
+            <Settings size={20} />
+          </button>
+        </div>
+
+        {/* ─── Chat Area ─── */}
+        <div className="flex-1 overflow-hidden">
+          <ScrollShadow className="h-full px-4 lg:px-6">
+            <div className="max-w-3xl mx-auto py-4 space-y-4">
+              {/* Welcome hero (only before chatting) */}
+              {!hasStartedChatting && (
+                <div className="capy-msg flex flex-col items-center py-8 text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#9b7abf] to-[#7c5fa3] flex items-center justify-center shadow-lg mb-4">
+                    <Bot size={38} className="text-white" />
+                  </div>
+                  <h2 className="text-xl font-semibold text-gray-800 mb-1">How can I help you today?</h2>
+                  <p className="text-gray-500 text-sm max-w-md">
+                    Ask me anything about MDCAT Biology — cell structure, genetics, human physiology, ecology and more.
+                  </p>
+
+                  {/* API key warning */}
+                  {!hasKey && !configLoading && (
+                    <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 max-w-md w-full">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle size={20} className="text-amber-500 shrink-0 mt-0.5" />
+                        <div className="text-left">
+                          <p className="font-medium text-amber-800 text-sm">API Key Required</p>
+                          <p className="text-amber-700 text-xs mt-1">
+                            You need a free Google Gemini API key to use Capy AI.
+                          </p>
+                          <Button
+                            size="sm"
+                            color="warning"
+                            variant="flat"
+                            className="mt-3"
+                            onClick={onSettingsOpen}
+                            endContent={<ChevronRight size={14} />}
+                          >
+                            Set Up API Key
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Messages */}
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`capy-msg flex items-start gap-3 ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
+                  style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
+                >
+                  {message.role === "assistant" && (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9b7abf] to-[#7c5fa3] flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                      <Bot size={16} className="text-white" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                      message.role === "user"
+                        ? "bg-gradient-to-r from-[#7c6adb] to-[#6b5ce7] text-white rounded-tr-md shadow-sm"
+                        : "bg-gray-50 text-gray-800 rounded-tl-md border border-gray-100"
+                    }`}
+                  >
+                    {message.role === "assistant" ? (
+                      <div className="space-y-0.5">{formatMarkdown(message.content)}</div>
+                    ) : (
+                      <p className="text-sm leading-relaxed">{message.content}</p>
+                    )}
+                  </div>
+                  {message.role === "user" && (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7c6adb] to-[#6b5ce7] flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                      <MessageCircle size={16} className="text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Streaming */}
+              {currentStreamingMessage && (
+                <div className="capy-msg flex items-start gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9b7abf] to-[#7c5fa3] flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                    <Bot size={16} className="text-white" />
+                  </div>
+                  <div className="max-w-[80%] bg-gray-50 text-gray-800 rounded-2xl rounded-tl-md px-4 py-3 border border-gray-100">
+                    <div className="space-y-0.5">{formatMarkdown(currentStreamingMessage)}</div>
+                    <div className="flex items-center gap-1 mt-2">
+                      <span className="capy-dot w-1.5 h-1.5 rounded-full bg-purple-400" />
+                      <span className="capy-dot w-1.5 h-1.5 rounded-full bg-purple-400" />
+                      <span className="capy-dot w-1.5 h-1.5 rounded-full bg-purple-400" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Typing indicator */}
+              {isStreaming && !currentStreamingMessage && (
+                <div className="capy-msg flex items-start gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9b7abf] to-[#7c5fa3] flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                    <Bot size={16} className="text-white" />
+                  </div>
+                  <div className="bg-gray-50 rounded-2xl rounded-tl-md px-5 py-3.5 border border-gray-100">
+                    <div className="flex items-center gap-1.5">
+                      <span className="capy-dot w-2 h-2 rounded-full bg-purple-400" />
+                      <span className="capy-dot w-2 h-2 rounded-full bg-purple-400" />
+                      <span className="capy-dot w-2 h-2 rounded-full bg-purple-400" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollShadow>
+        </div>
+
+        {/* ─── Quick Starters ─── */}
+        {!hasStartedChatting && hasKey && (
+          <div className="px-4 lg:px-6 pb-2 flex gap-2 justify-center flex-wrap shrink-0">
+            {[
+              { icon: <Lightbulb size={14} />, label: "Explain mitosis vs meiosis" },
+              { icon: <FileText size={14} />, label: "Summarize the Krebs cycle" },
+              { icon: <Sparkle size={14} />, label: "Types of immunity" },
+            ].map((starter, i) => (
+              <button
+                key={i}
+                onClick={() => sendMessage(starter.label)}
+                className="capy-msg flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-gray-600 bg-white border border-gray-200 shadow-sm hover:bg-gray-50 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                style={{ animationDelay: `${0.15 + i * 0.08}s` }}
+              >
+                {starter.icon}
+                {starter.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ─── Input Area ─── */}
+        <div className="px-4 lg:px-6 pb-4 pt-3 shrink-0">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 flex items-center gap-2 px-4 py-2.5 transition-all focus-within:shadow-md focus-within:border-purple-300">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder={hasKey ? "Ask Capy AI anything about biology..." : "Set up your API key to start chatting..."}
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              disabled={isStreaming || !hasKey}
+              className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-400 disabled:cursor-not-allowed"
+            />
+            <button
+              onClick={() => sendMessage()}
+              disabled={!inputMessage.trim() || isStreaming || !hasKey}
+              className="w-9 h-9 rounded-xl bg-gradient-to-r from-[#9b7abf] to-[#7c5fa3] text-white flex items-center justify-center shadow-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200"
+            >
+              {isStreaming ? <Spinner size="sm" color="white" /> : <Send size={16} />}
+            </button>
+          </div>
+          <p className="text-center text-[11px] text-gray-400 mt-2">Capy AI uses Google Gemini. Responses may not always be accurate.</p>
+        </div>
       </div>
 
-      {/* Usage Overview */}
-      <Card className="bg-gradient-to-br from-blue-50 to-purple-50">
-        <CardBody>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* ─── Settings Modal ─── */}
+      <Modal isOpen={isSettingsOpen} onClose={onSettingsClose} size="2xl" scrollBehavior="inside">
+        <ModalContent>
+          <ModalHeader className="flex items-center gap-2 border-b pb-4">
+            <Settings size={20} className="text-gray-600" />
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp size={20} className="text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">Current Month Usage</span>
-              </div>
-              <p className="text-2xl font-bold">
-                {config?.tokenUsage?.currentMonth?.toLocaleString() || 0} / {config?.tokenQuota?.toLocaleString() || 0}
-              </p>
-              <p className="text-xs text-gray-500">tokens</p>
+              <h3 className="text-lg font-semibold">Capy AI Settings</h3>
+              <p className="text-xs text-gray-500 font-normal">Configure your API key for Capy AI</p>
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Cpu size={20} className="text-purple-600" />
-                <span className="text-sm font-medium text-gray-600">Total Used</span>
-              </div>
-              <p className="text-2xl font-bold">{config?.tokenUsage?.totalUsed?.toLocaleString() || 0}</p>
-              <p className="text-xs text-gray-500">tokens (all time)</p>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Settings size={20} className="text-green-600" />
-                <span className="text-sm font-medium text-gray-600">Status</span>
-              </div>
-              <Chip color={hasKey ? "success" : "warning"} variant="flat" className="mt-2">
-                {hasKey ? "Active" : "Not Configured"}
-              </Chip>
-            </div>
-          </div>
-          <Divider className="my-4" />
-          <div>
-            <div className="flex justify-between mb-2">
-              <span className="text-sm font-medium">Quota Usage</span>
-              <span className="text-sm font-bold">{usagePercentage}%</span>
-            </div>
-            <Progress
-              value={usagePercentage}
-              color={usagePercentage > 80 ? "danger" : usagePercentage > 50 ? "warning" : "success"}
-              className="h-2"
-            />
-          </div>
-        </CardBody>
-      </Card>
+          </ModalHeader>
 
-      {/* API Key Configuration */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Key size={20} />
-            <h2 className="text-xl font-semibold">API Key Configuration</h2>
-          </div>
-        </CardHeader>
-        <CardBody className="space-y-4">
-          {hasKey && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2 text-green-700">
-                <CheckCircle size={20} />
-                <span className="font-medium">API Key Configured</span>
+          <ModalBody className="py-6 space-y-6">
+            {/* Status banner */}
+            {hasKey ? (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+                <CheckCircle size={22} className="text-green-600 shrink-0" />
+                <div>
+                  <p className="font-medium text-green-800 text-sm">API Key Active</p>
+                  <p className="text-green-700 text-xs mt-0.5">
+                    Your Google Gemini key is configured and ready to use.
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-green-600 mt-1">
-                Your {config.aiProvider === "openai" ? "OpenAI" : config.aiProvider === "anthropic" ? "Anthropic" : "Google Gemini"} API key is active and ready to use
-              </p>
-            </div>
-          )}
-
-          <Select
-            label="AI Provider"
-            placeholder="Select provider"
-            selectedKeys={[formData.aiProvider]}
-            onChange={(e) => setFormData({ ...formData, aiProvider: e.target.value })}
-            classNames={{
-              trigger: "h-12",
-            }}
-          >
-            <SelectItem key="gemini">
-              Google Gemini 1.5 Flash
-            </SelectItem>
-            <SelectItem key="openai">
-              OpenAI (GPT-4o Mini)
-            </SelectItem>
-            <SelectItem key="anthropic">
-              Anthropic (Claude 3.5 Haiku)
-            </SelectItem>
-          </Select>
-
-          <Input
-            type="password"
-            label="API Key"
-            placeholder={
-              formData.aiProvider === "openai"
-                ? "sk-..."
-                : formData.aiProvider === "anthropic"
-                ? "sk-ant-..."
-                : "AIza..."
-            }
-            value={formData.apiKey}
-            onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-            classNames={{
-              input: "font-mono",
-              inputWrapper: "h-12",
-            }}
-            description={
-              formData.aiProvider === "openai"
-                ? "Get your API key from platform.openai.com"
-                : formData.aiProvider === "anthropic"
-                ? "Get your API key from console.anthropic.com"
-                : "Get your API key from makersuite.google.com/app/apikey"
-            }
-          />
-
-          <div className="flex gap-3">
-            <Button color="primary" onClick={handleSave} className="flex-1">
-              Save API Key
-            </Button>
-            <Button variant="bordered" onClick={handleTestKey} isLoading={testing} className="flex-1">
-              Test Key
-            </Button>
-            {hasKey && (
-              <Button color="danger" variant="flat" onClick={handleRemoveKey}>
-                Remove
-              </Button>
+            ) : (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
+                <AlertTriangle size={22} className="text-amber-500 shrink-0" />
+                <div>
+                  <p className="font-medium text-amber-800 text-sm">No API Key Configured</p>
+                  <p className="text-amber-700 text-xs mt-0.5">
+                    Add a Google Gemini API key to start using Capy AI.
+                  </p>
+                </div>
+              </div>
             )}
-          </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-start gap-2">
-              <AlertCircle size={20} className="text-blue-600 mt-0.5" />
-              <div className="text-sm text-blue-800">
-                <p className="font-medium mb-1">How it works:</p>
-                <ul className="list-disc list-inside space-y-1 text-blue-700">
-                  <li>Your API key is encrypted and stored securely</li>
-                  <li>Explanations are generated only when missing from database</li>
-                  <li>You have {config?.tokenQuota?.toLocaleString()} tokens per month</li>
-                  <li>Average explanation uses 200-300 tokens</li>
-                  <li>Generated explanations are cached to save tokens</li>
-                </ul>
+            {/* Setup Guide */}
+            <div>
+              <button
+                onClick={() => setShowSetupGuide(!showSetupGuide)}
+                className="flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors"
+              >
+                <Zap size={16} />
+                {showSetupGuide ? "Hide" : "Show"} Setup Guide — Get your free API key
+                <ChevronRight size={14} className={`transition-transform ${showSetupGuide ? "rotate-90" : ""}`} />
+              </button>
+
+              {showSetupGuide && (
+                <div className="mt-4 space-y-3">
+                  {setupSteps.map((step, i) => (
+                    <div
+                      key={i}
+                      className={`flex gap-3 p-3 rounded-xl border transition-colors ${
+                        setupStep === i ? "bg-purple-50 border-purple-200" : "bg-gray-50 border-gray-100"
+                      }`}
+                      onClick={() => setSetupStep(i)}
+                    >
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                        setupStep === i
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-200 text-gray-600"
+                      }`}>
+                        {i + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-gray-800">{step.title}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{step.description}</p>
+                        {step.action && <div className="mt-2">{step.action}</div>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* API Key Input */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <Key size={16} />
+                Google Gemini API Key
+              </label>
+              <Input
+                type="password"
+                placeholder="AIza..."
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                classNames={{
+                  input: "font-mono text-sm",
+                  inputWrapper: "h-12",
+                }}
+              />
+              <div className="flex gap-2">
+                <Button
+                  color="primary"
+                  className="flex-1 bg-gradient-to-r from-[#9b7abf] to-[#7c5fa3]"
+                  onClick={handleSave}
+                  isDisabled={!apiKey}
+                >
+                  Save Key
+                </Button>
+                <Button
+                  variant="bordered"
+                  className="flex-1"
+                  onClick={handleTestKey}
+                  isLoading={testing}
+                  isDisabled={!apiKey}
+                >
+                  Test Key
+                </Button>
+                {hasKey && (
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    isIconOnly
+                    onClick={handleRemoveKey}
+                    title="Remove API Key"
+                  >
+                    <Trash2 size={18} />
+                  </Button>
+                )}
               </div>
             </div>
-          </div>
-        </CardBody>
-      </Card>
 
-      {/* Provider Comparison */}
-      <Card>
-        <CardHeader>
-          <h3 className="text-lg font-semibold">Provider Comparison</h3>
-        </CardHeader>
-        <CardBody>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3 px-2">Provider</th>
-                  <th className="text-left py-3 px-2">Model</th>
-                  <th className="text-left py-3 px-2">Cost per 1M tokens</th>
-                  <th className="text-left py-3 px-2">Speed</th>
-                  <th className="text-left py-3 px-2">Quality</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-3 px-2 font-medium">Google Gemini</td>
-                  <td className="py-3 px-2">Gemini 1.5 Flash</td>
-                  <td className="py-3 px-2">$0.075</td>
-                  <td className="py-3 px-2">
-                    <Chip size="sm" color="success">Very Fast</Chip>
-                  </td>
-                  <td className="py-3 px-2">
-                    <Chip size="sm" color="success">Excellent</Chip>
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-3 px-2 font-medium">OpenAI</td>
-                  <td className="py-3 px-2">GPT-4o Mini</td>
-                  <td className="py-3 px-2">$0.15</td>
-                  <td className="py-3 px-2">
-                    <Chip size="sm" color="success">Fast</Chip>
-                  </td>
-                  <td className="py-3 px-2">
-                    <Chip size="sm" color="success">Excellent</Chip>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-3 px-2 font-medium">Anthropic</td>
-                  <td className="py-3 px-2">Claude 3.5 Haiku</td>
-                  <td className="py-3 px-2">$1.00</td>
-                  <td className="py-3 px-2">
-                    <Chip size="sm" color="warning">Medium</Chip>
-                  </td>
-                  <td className="py-3 px-2">
-                    <Chip size="sm" color="success">Excellent</Chip>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardBody>
-      </Card>
-    </div>
+            {/* Info */}
+            <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <ShieldCheck size={16} />
+                How it works
+              </div>
+              <ul className="text-xs text-gray-600 space-y-1.5 ml-6 list-disc">
+                <li>Your API key is encrypted and stored securely</li>
+                <li>Capy AI uses Google Gemini 2.5 Flash — fast and free tier available</li>
+                <li>Generated explanations are cached to minimize API calls</li>
+                <li>You can remove your key at any time</li>
+              </ul>
+            </div>
+          </ModalBody>
+
+          <ModalFooter className="border-t">
+            <Button variant="light" onClick={onSettingsClose}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }
 

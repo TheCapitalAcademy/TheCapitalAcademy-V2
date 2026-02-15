@@ -87,10 +87,10 @@ const menuItems = [
     description: "Subscriptions",
   },
   {
-    text: "AI Settings",
+    text: "Capy AI",
     icon: Sparkles,
     path: "/dashboard/ai-settings",
-    description: "AI Configuration",
+    description: "AI Assistant",
   },
   {
     text: "Profile",

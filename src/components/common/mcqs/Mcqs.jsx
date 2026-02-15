@@ -189,15 +189,15 @@ const Mcqs = () => {
 
 				//checkMockPercentage
 				if (subject == 'mock') {
-					if (index < 68) {
+					if (index < 62) {
 						setBioCorrectCount((e) => e + 1);
-					} else if (index < 122) {
+					} else if (index < 110) {
 						setChemCorrectCount((e) => e + 1);
-					} else if (index < 176) {
+					} else if (index < 158) {
 						setPhyCorrectCount((e) => e + 1);
-					} else if (index < 194) {
+					} else if (index < 174) {
 						setEngCorrectCount((e) => e + 1);
-					} else if (index < 200) {
+					} else if (index < 180) {
 						setLogicCorrectCount((e) => e + 1);
 					}
 				}
@@ -537,7 +537,7 @@ const Mcqs = () => {
 								<ul>
 									<li>You can select only one option</li>
 									<li>Once an option is selected, it can't be changed later</li>
-									<li>You can solve only {subject == 'mock' ? '200' : '100'} McQs in one go</li>
+									<li>You can solve only {subject == 'mock' ? '180' : '100'} McQs in one go</li>
 									<li>{subject == 'mock' ?
 										"Check Mock-test result after completion"
 										: 'Your data will enter the stats only if you submit or save the test'
@@ -588,10 +588,10 @@ const Mcqs = () => {
 							<div class="banner-right">
 								<div class="Top-text"><b>Summary</b></div>
 								<div class="small-grid">
-									<div class="green"><b> {subject != 'mock' ? "Correct" : 'Biology'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/68</> : correctMcq?.length}</h7></div>
-									<div class="orange"><b>{subject != 'mock' ? "Unattempted" : 'Chemistry'} </b><h7>{subject == 'mock' ? <>{chemCorrectCout}/54</> : (mcqs.length - (correctMcq?.length + wrongMcq?.length))}</h7></div>
-									<div class="red"><b>{subject != 'mock' ? "Wrong" : 'Physics'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/54</> : wrongMcq?.length}</h7></div>
-									<div class="blue"><b>{subject != 'mock' ? "Percentage" : 'English'}</b><h7>{subject == 'mock' ? <>{engCorrectCount}/18</> : <>{((correctMcq?.length / mcqs.length) * 100).toFixed(1)} %</>}</h7></div>
+									<div class="green"><b> {subject != 'mock' ? "Correct" : 'Biology'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/62</> : correctMcq?.length}</h7></div>
+									<div class="orange"><b>{subject != 'mock' ? "Unattempted" : 'Chemistry'} </b><h7>{subject == 'mock' ? <>{chemCorrectCout}/48</> : (mcqs.length - (correctMcq?.length + wrongMcq?.length))}</h7></div>
+									<div class="red"><b>{subject != 'mock' ? "Wrong" : 'Physics'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/48</> : wrongMcq?.length}</h7></div>
+									<div class="blue"><b>{subject != 'mock' ? "Percentage" : 'English'}</b><h7>{subject == 'mock' ? <>{engCorrectCount}/16</> : <>{((correctMcq?.length / mcqs.length) * 100).toFixed(1)} %</>}</h7></div>
 									{subject == 'mock' && <div class="pink"><b>Logical Reasoning</b><h7>{logicCorrectCount}/6</h7></div>}
 								</div>
 								<div class="button">

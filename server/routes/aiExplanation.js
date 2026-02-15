@@ -77,9 +77,7 @@ aiExplanationRouter.post('/generate', authUser, checkAIQuota, asyncWrapper(async
             explanation: result.explanation,
             source: 'ai_generated',
             cached: false,
-            tokensUsed: result.tokensUsed,
             model: result.model,
-            remainingQuota: aiConfig.tokenQuota - aiConfig.tokenUsage.currentMonth
         });
 
     } catch (error) {
@@ -203,11 +201,9 @@ aiExplanationRouter.post('/batch', authUser, checkAIQuota, asyncWrapper(async (r
             succeeded: results.filter(r => r.status === 'success').length,
             skipped: results.filter(r => r.status === 'skipped').length,
             failed: errors.length,
-            totalTokensUsed
         },
         results,
         errors,
-        remainingQuota: aiConfig.tokenQuota - aiConfig.tokenUsage.currentMonth
     });
 }));
 

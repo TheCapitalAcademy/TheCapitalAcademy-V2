@@ -24,6 +24,7 @@ import testRouter from './server/routes/series/tests.js';
 import aiExplanationRouter from './server/routes/aiExplanation.js';
 import aiSettingsRouter from './server/routes/aiSettings.js';
 import aiChatRouter from './server/routes/aiChat.js';
+import capyAiChatRouter from './server/routes/capyAiChat.js';
 
 dotenv.config({
   path: "./.env.local",
@@ -75,7 +76,7 @@ expressApp.use("/api/v1/test", testRouter);
 expressApp.use("/api/v1/explanation", aiExplanationRouter);
 expressApp.use("/api/v1/ai-settings", aiSettingsRouter);
 expressApp.use("/api/v1/ai-chat", aiChatRouter);
-expressApp.use("/api/v1/ai-chat", aiChatRouter);
+expressApp.use("/api/v1/capy-ai", capyAiChatRouter);
 
 // error handler middleware
 expressApp.use(errorHandler);

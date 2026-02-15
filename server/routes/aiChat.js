@@ -88,9 +88,7 @@ aiChatRouter.post('/message', authUser, checkAIQuota, asyncWrapper(async (req, r
 
         res.status(200).json({
             response: result.explanation,
-            tokensUsed: result.tokensUsed,
             model: result.model,
-            remainingQuota: aiConfig.tokenQuota - aiConfig.tokenUsage.currentMonth
         });
 
     } catch (error) {

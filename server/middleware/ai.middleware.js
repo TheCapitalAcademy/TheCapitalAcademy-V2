@@ -80,10 +80,10 @@ export const checkAIQuota = async (req, res, next) => {
 export const validateAIProvider = (req, res, next) => {
     const { aiProvider, apiKey } = req.body;
 
-    if (!aiProvider || !['openai', 'anthropic', 'gemini'].includes(aiProvider)) {
+    if (aiProvider !== 'gemini') {
         return res.status(400).json({ 
             error: 'Invalid provider',
-            message: 'AI provider must be "openai", "anthropic", or "gemini"'
+            message: 'Only Google Gemini is supported'
         });
     }
 
@@ -94,22 +94,7 @@ export const validateAIProvider = (req, res, next) => {
         });
     }
 
-    // Basic format validation
-    if (aiProvider === 'openai' && !apiKey.startsWith('sk-')) {
-        return res.status(400).json({ 
-            error: 'Invalid OpenAI API key',
-            message: 'OpenAI API keys should start with "sk-"'
-        });
-    }
-
-    if (aiProvider === 'anthropic' && !apiKey.startsWith('sk-ant-')) {
-        return res.status(400).json({ 
-            error: 'Invalid Anthropic API key',
-            message: 'Anthropic API keys should start with "sk-ant-"'
-        });
-    }
-
-    if (aiProvider === 'gemini' && !apiKey.startsWith('AIza')) {
+    if (!apiKey.startsWith('AIza')) {
         return res.status(400).json({ 
             error: 'Invalid Gemini API key',
             message: 'Google Gemini API keys should start with "AIza"'

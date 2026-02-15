@@ -61,15 +61,8 @@ aiSettingsRouter.get('/', authUser, asyncWrapper(async (req, res) => {
     res.status(200).json({
         aiProvider: aiConfig.aiProvider,
         hasApiKey: !!aiConfig.apiKey,
-        tokenUsage: {
-            currentMonth: aiConfig.tokenUsage.currentMonth,
-            totalUsed: aiConfig.tokenUsage.totalUsed,
-            lastResetDate: aiConfig.tokenUsage.lastResetDate,
-        },
-        tokenQuota: aiConfig.tokenQuota,
         isEnabled: aiConfig.isEnabled,
         preferences: aiConfig.preferences,
-        usagePercentage: Math.round((aiConfig.tokenUsage.currentMonth / aiConfig.tokenQuota) * 100),
     });
 }));
 

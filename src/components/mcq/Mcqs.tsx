@@ -58,7 +58,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingExplanation, setIsGeneratingExplanation] = useState(false);
   const [generatedExplanations, setGeneratedExplanations] = useState(new Map());
-  const [aiTokenUsage, setAiTokenUsage] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
 
@@ -141,20 +140,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
     }
   }
 
-  const fetchAITokenUsage = async () => {
-    try {
-      const response = await Axios.get("/api/v1/ai-settings")
-      if (response.data) {
-        setAiTokenUsage({
-          current: response.data.tokenUsage?.currentMonth || 0,
-          total: response.data.tokenQuota || 50000,
-        })
-      }
-    } catch (error) {
-      // Silently fail if AI settings not configured
-    }
-  }
-
   // Auto-save function
   const autoSaveProgress = async () => {
     if (isSeries) return
@@ -202,7 +187,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
 
   useEffect(() => {
     setLoading(false)
-    fetchAITokenUsage()
     return () => {
       if (autoSaveIntervalRef.current) {
         clearInterval(autoSaveIntervalRef.current)
@@ -339,15 +323,15 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
         setCorrectMcq((prevMcq) => [...prevMcq, mcqs[index]._id])
         setAttempted((prev) => [...prev, index])
         if (subject === "mock") {
-          if (index < 68) {
+          if (index < 62) {
             setBioCorrectCount((prev) => prev + 1)
-          } else if (index < 122) {
+          } else if (index < 110) {
             setChemCorrectCount((prev) => prev + 1)
-          } else if (index < 176) {
+          } else if (index < 158) {
             setPhyCorrectCount((prev) => prev + 1)
-          } else if (index < 194) {
+          } else if (index < 174) {
             setEngCorrectCount((prev) => prev + 1)
-          } else if (index < 200) {
+          } else if (index < 180) {
             setLogicCorrectCount((prev) => prev + 1)
           }
         }
@@ -458,9 +442,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
         setGeneratedExplanations(prev => new Map(prev.set(mcqId, response.data.explanation)))
 
         if (response.data.source === 'ai_generated') {
-          toast.success(`Explanation generated! (${response.data.tokensUsed} tokens used)`, { duration: 2000 })
-          // Refresh token usage after generation
-          fetchAITokenUsage()
+          toast.success('Explanation generated!', { duration: 2000 })
         }
       }
     } catch (error) {
@@ -669,11 +651,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                       <h3 className="text-xl font-bold">
                         Question {index + 1}/{mcqs?.length}
                       </h3>
-                      {aiTokenUsage && (
-                        <Chip color="primary" variant="flat" size="sm">
-                          AI: {aiTokenUsage.current.toLocaleString()}/{aiTokenUsage.total.toLocaleString()} tokens
-                        </Chip>
-                      )}
                       {mcqs[index]?.info && (
                         <Chip color="secondary" variant="flat" className="capitalize">
                           {mcqs[index]?.info}
@@ -707,11 +684,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                 <CardHeader className="lg:hidden  flex-shrink-0">
                   <div className="w-full space-y-3">
                     <div className="flex items-center justify-between">
-                      {aiTokenUsage && (
-                        <Chip color="primary" variant="flat" size="sm">
-                          AI: {aiTokenUsage.current.toLocaleString()}/{aiTokenUsage.total.toLocaleString()}
-                        </Chip>
-                      )}
                       {mcqs[index]?.info && (
                         <Chip color="secondary" variant="flat" size="sm" className="capitalize">
                           {mcqs[index]?.info}
@@ -752,10 +724,10 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                     <div className="space-y-4 lg:space-y-6 pb-4">
                       {/* Question - Fixed */}
                       <div className="flex-shrink-0">
-                        <div className="flex items-center gap-2 mb-3">
+                        {/* <div className="flex items-center gap-2 mb-3">
                           <Question size={20} className="text-blue-600" />
                           <h4 className="text-base lg:text-lg font-semibold text-blue-600">Question:</h4>
-                        </div>
+                        </div> */}
                         <Card className="bg-slate-50 border-l-4 border-l-blue-500">
                           <CardBody className="py-3 lg:py-4">
                             <MathJax dynamic inline className="text-sm lg:text-lg">
@@ -1098,7 +1070,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-600 font-bold">📝</span>
-                      You can solve only {subject === "mock" ? "200" : "100"} MCQs in one go
+                      You can solve only {subject === "mock" ? "180" : "100"} MCQs in one go
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-600 font-bold">💾</span>
@@ -1193,7 +1165,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <PhosphorCheckCircle size={24} className="text-green-600 mx-auto mb-2" />
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Correct" : "Biology"}</p>
                           <p className="text-lg lg:text-xl font-bold text-green-600">
-                            {subject === "mock" ? `${bioCorrectCout}/68` : correctMcq?.length}
+                            {subject === "mock" ? `${bioCorrectCout}/62` : correctMcq?.length}
                           </p>
                         </CardBody>
                       </Card>
@@ -1202,7 +1174,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <PhosphorInfo size={24} className="text-orange-600 mx-auto mb-2" />
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Unattempted" : "Chemistry"}</p>
                           <p className="text-lg lg:text-xl font-bold text-orange-600">
-                            {subject === "mock" ? `${chemCorrectCout}/54` : mcqs.length - (correctMcq?.length + wrongMcq?.length)}
+                            {subject === "mock" ? `${chemCorrectCout}/48` : mcqs.length - (correctMcq?.length + wrongMcq?.length)}
                           </p>
                         </CardBody>
                       </Card>
@@ -1211,7 +1183,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <PhosphorXCircle size={24} className="text-red-600 mx-auto mb-2" />
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Wrong" : "Physics"}</p>
                           <p className="text-lg lg:text-xl font-bold text-red-600">
-                            {subject === "mock" ? `${phyCorrectCount}/54` : wrongMcq?.length}
+                            {subject === "mock" ? `${phyCorrectCount}/48` : wrongMcq?.length}
                           </p>
                         </CardBody>
                       </Card>
@@ -1221,7 +1193,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Percentage" : "English"}</p>
                           <p className="text-lg lg:text-xl font-bold text-blue-600">
                             {subject === "mock"
-                              ? `${engCorrectCount}/18`
+                              ? `${engCorrectCount}/16`
                               : `${((correctMcq?.length / mcqs.length) * 100).toFixed(1)}%`}
                           </p>
                         </CardBody>
@@ -1479,7 +1451,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
           onClose={() => setIsChatOpen(false)}
           mcq={mcqs[index]}
           mcqType={isSeries ? "SeriesMCQ" : "MCQ"}
-          onTokensUsed={fetchAITokenUsage}
         />
       )}
     </MathJaxContext>

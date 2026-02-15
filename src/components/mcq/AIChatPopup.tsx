@@ -22,7 +22,6 @@ import { toast } from "react-hot-toast"
 interface Message {
   role: "user" | "ai"
   content: string
-  tokensUsed?: number
 }
 
 interface AIChatPopupProps {
@@ -30,10 +29,9 @@ interface AIChatPopupProps {
   onClose: () => void
   mcq: any
   mcqType: "MCQ" | "SeriesMCQ"
-  onTokensUsed?: () => void // Callback to refresh token usage
 }
 
-const AIChatPopup = ({ isOpen, onClose, mcq, mcqType, onTokensUsed }: AIChatPopupProps) => {
+const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -117,7 +115,6 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType, onTokensUsed }: AIChatPopu
       const aiMessage: Message = {
         role: "ai",
         content: response.data.response,
-        tokensUsed: response.data.tokensUsed,
       }
 
       setMessages((prev) => [...prev, aiMessage])
@@ -130,10 +127,6 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType, onTokensUsed }: AIChatPopu
         })
       }
 
-      // Notify parent to refresh token usage
-      if (onTokensUsed) {
-        onTokensUsed()
-      }
     } catch (error: any) {
       const errorData = error.response?.data
 
@@ -227,11 +220,6 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType, onTokensUsed }: AIChatPopu
                     </div>
                   )}
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  {message.tokensUsed && (
-                    <p className="text-xs mt-2 opacity-70">
-                      {message.tokensUsed} tokens used
-                    </p>
-                  )}
                 </div>
               </div>
             ))}
