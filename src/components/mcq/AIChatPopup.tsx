@@ -46,7 +46,7 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
       setMessages([
         {
           role: "ai",
-          content: "Hi! I'm CAPyAI, your study assistant. Feel free to ask me anything about this MCQ — the question, options, or the concept being tested.",
+          content: "Hi! I'm Capy AI, your study assistant. Feel free to ask me anything about this MCQ — the question, options, or the concept being tested.",
         },
       ])
     }
@@ -177,8 +177,8 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
         <ModalHeader className="flex items-center gap-2 border-b">
           <MessageCircle className="text-blue-600" size={24} />
           <div className="flex-1">
-            <h3 className="text-lg font-semibold">CAPyAI Assistant</h3>
-            <p className="text-xs text-gray-500 font-normal">Ask CAPyAI about this MCQ</p>
+            <h3 className="text-lg font-semibold">Capy AI Assistant</h3>
+            <p className="text-xs text-gray-500 font-normal">Ask Capy AI about this MCQ</p>
           </div>
           <Button isIconOnly variant="light" size="sm" onClick={handleClose}>
             <X size={20} />
@@ -216,7 +216,7 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
                   {message.role === "ai" && (
                     <div className="flex items-center gap-2 mb-2">
                       <Sparkles size={16} className="text-blue-600" />
-                      <span className="text-xs font-medium text-blue-600">CAPyAI</span>
+                      <span className="text-xs font-medium text-blue-600">Capy AI</span>
                     </div>
                   )}
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
