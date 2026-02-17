@@ -9,6 +9,7 @@ const config = {
           hostname: '**',
         },
       ],
+      unoptimized: true,
     },
     eslint: {
       ignoreDuringBuilds: true,
