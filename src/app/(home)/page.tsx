@@ -8,6 +8,9 @@ import Reviews from '@/components/review/Review';
 import FAQAccordion from '@/components/Faqs/Faqs';
 import Axios from '@/lib/Axios';
 
+// Revalidate every 60 seconds — avoids re-fetching on every single page load
+export const revalidate = 60;
+
 
 
 
@@ -16,11 +19,13 @@ export default async function Home() {
     let reviews = [];
     let isActiveCourse = false;
     try {
-        const res = await Axios.get('/api/v1/review');
-        reviews = res.data;
-
-        const response = await Axios.get('/api/v1/course/active-courses');
-        const activeCourses = response?.data?.activeCourses;
+        // Fetch in parallel instead of sequentially to cut load time in half
+        const [reviewRes, courseRes] = await Promise.all([
+            Axios.get('/api/v1/review'),
+            Axios.get('/api/v1/course/active-courses'),
+        ]);
+        reviews = reviewRes.data;
+        const activeCourses = courseRes?.data?.activeCourses;
         if (activeCourses && activeCourses.length > 0) {
             isActiveCourse = true;
         }

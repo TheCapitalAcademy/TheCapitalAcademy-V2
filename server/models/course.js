@@ -15,6 +15,10 @@ const courseSchema = new Schema({
         type: Number,
         required: true
     },
+    cdiscount: {
+        type: Number,
+        default: 0
+    },
 });
 
 

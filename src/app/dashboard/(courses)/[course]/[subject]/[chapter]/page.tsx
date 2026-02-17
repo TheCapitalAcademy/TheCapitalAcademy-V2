@@ -20,7 +20,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  Spinner,
 } from "@heroui/react"
 import {
   ArrowUDownLeft,
@@ -32,7 +31,6 @@ import {
   CheckFat
 } from "@phosphor-icons/react"
 import Axios from "@/lib/Axios"
-import { Sparkles } from "lucide-react"
 
 interface PageProps {
   params: {
@@ -54,7 +52,6 @@ const Page = ({ params }: PageProps) => {
   const [selectedTopic, setSelectedTopic] = useState<string>("")
   const [mcqCount, setMcqCount] = useState<any[]>([])
   const [isMcqAvailable, setIsMcqAvailable] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadTopics = () => {
@@ -78,7 +75,6 @@ const Page = ({ params }: PageProps) => {
 
   // Uncomment when ready to use
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = async () => {
       const res = await Axios.post('/api/v1/mcq/count', {
         course: course === "trial" ? "mdcat" : course,
@@ -87,7 +83,6 @@ const Page = ({ params }: PageProps) => {
         topic: topics,
         category,
       });
-      setIsLoading(false);
       setMcqCount(res.data);
     };
     if (topics.length > 0) fetchData();
@@ -237,22 +232,6 @@ const Page = ({ params }: PageProps) => {
                     >
                       <div className="flex items-center gap-2 justify-between w-full">
                         <span className="font-medium text-sm md:text-medium text-foreground">{topic}</span>
-                        {chapter !== "mock" && (
-                          <Chip
-                            size="sm"
-                            variant="flat"
-                            color="secondary"
-                            className="font-medium flex items-center justify-center"
-                            startContent={<Sparkles size={14} />}
-                          >
-                            {
-                              isLoading
-                                ? <span className="h-full flex justify-center items-center pb-1"><Spinner className="h-full" variant="dots" /></span>
-                                : <span>{mcqCount[index]?.count || 0} MCQs</span>
-                            }
-
-                          </Chip>
-                        )}
                       </div>
                     </Radio>
                   ))}

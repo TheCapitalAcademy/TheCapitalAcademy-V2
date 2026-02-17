@@ -9,7 +9,6 @@ const config = {
           hostname: '**',
         },
       ],
-      unoptimized: true,
     },
     eslint: {
       ignoreDuringBuilds: true,
@@ -17,10 +16,21 @@ const config = {
     typescript: {
       ignoreBuildErrors: true,
     },
-    webpack: (config, { isServer }) => {
-      // Disable filesystem cache to prevent cache corruption issues
-      config.cache = false;
-      return config;
+    // Convert barrel imports to direct imports — this is the #1 fix for module count
+    modularizeImports: {
+      '@mui/material': {
+        transform: '@mui/material/{{member}}',
+      },
+      '@mui/icons-material': {
+        transform: '@mui/icons-material/{{member}}',
+      },
+      'lucide-react': {
+        transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
+      },
+      '@phosphor-icons/react': {
+        transform: '@phosphor-icons/react/dist/ssr/{{member}}',
+        skipDefaultConversion: true,
+      },
     },
   }
 

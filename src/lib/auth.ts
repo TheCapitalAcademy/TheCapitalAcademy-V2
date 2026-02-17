@@ -68,10 +68,9 @@ const authOptions: NextAuthOptions = {
 
    callbacks: {
       async jwt({ token, user, account }) {
-         await connectDB();
-
-         // If this is the first login, user will be defined
+         // Only connect to DB when we actually need it (first login with Google)
          if (user && account?.provider === "google") {
+            await connectDB();
             // Check if user exists in DB
             let existingUser = await UserModel.findOne({ email: user.email });
 
@@ -150,7 +149,7 @@ const authOptions: NextAuthOptions = {
    },
 
    secret: process.env.NEXTAUTH_SECRET!,
-   debug: process.env.NODE_ENV === "development",
+   debug: false,
 };
 
 export default authOptions;

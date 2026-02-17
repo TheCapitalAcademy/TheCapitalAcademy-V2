@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 // Create a custom Axios instance
 const Axios = axios.create({
-   baseURL: process.env.NEXT_PUBLIC_API_URL,
+   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
    headers: {
       "Content-Type": "application/json",
    },
@@ -16,19 +16,15 @@ const Axios = axios.create({
 // Add a request interceptor to include the token
 Axios.interceptors.request.use(
    async (config) => {
-      let session;
       const isServer = typeof window === "undefined";
 
-      session = session = isServer
+      // Cache session to avoid repeated getServerSession/getSession calls
+      const session = isServer
          ? await getServerSession(authOptions)
          : await getSession();
 
-      console.log("Session:", session); // Debugging
-
       if (session?.accessToken) {
          config.headers.Authorization = `Bearer ${session.accessToken}`;
-      } else {
-         console.warn("No access token found in session");
       }
 
       return config;

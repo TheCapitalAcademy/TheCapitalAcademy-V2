@@ -2,7 +2,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from 'notistack';
 import Axios from '@/lib/Axios';
@@ -52,7 +55,7 @@ const TopBar = ({ content }) => {
         >
           <Toolbar sx={{ px: 2 }}>
             <Typography variant="body2" sx={{ flexGrow: 1, display: 'flex', items: 'center', width: '100%', color: '#fff' }}>
-              <marquee className="marquee-text  text-lg h-full" scrollAmount="4">
+              <marquee className="marquee-text  text-lg h-full" scrollamount="4">
                 {topbarContent}
               </marquee>
             </Typography>

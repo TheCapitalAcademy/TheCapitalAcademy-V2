@@ -3,6 +3,9 @@ import Footer from '@/components/footer/Footer'
 import Axios from "@/lib/Axios";
 import FloatingWhatsApp from "@/components/common/whatsppFloat/Whatsapp";
 
+// Revalidate every 120 seconds — topbar content rarely changes
+export const revalidate = 120;
+
 
 
 export default async function RootLayout({

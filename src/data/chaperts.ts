@@ -20,6 +20,7 @@ import bio_19 from '../assets/chapters/bio/19.png';
 import bio_20 from '../assets/chapters/bio/20.png';
 import bio_21 from '../assets/chapters/bio/21.png';
 import bio_02 from '../assets/chapters/bio/02.png';
+import bio_22 from '../assets/chapters/bio/22.jpg'
 
 
 
@@ -44,6 +45,7 @@ import chem_17 from '../assets/chapters/chem/17.png';
 import chem_18 from '../assets/chapters/chem/18.png';
 import chem_19 from '../assets/chapters/chem/19.png';
 import chem_20 from '../assets/chapters/chem/20.png';
+import chem_21 from '../assets/chapters/chem/21.jpg';
 
 
 //phycics images
@@ -61,6 +63,9 @@ import phy_11 from '../assets/chapters/phy/11.png';
 import phy_12 from '../assets/chapters/phy/12.png';
 import phy_13 from '../assets/chapters/phy/13.png';
 import phy_14 from '../assets/chapters/phy/14.png';
+import phy_15 from '../assets/chapters/phy/15.jpg';
+import phy_16 from '../assets/chapters/phy/16.jpg';
+import phy_17 from '../assets/chapters/phy/17.jpg';
 
 
 //english images
@@ -119,6 +124,8 @@ export const mdcatBioChapters = [
     { id: 19, name: 'INHERITANCE', image: bio_19 },
     { id: 20, name: 'CHROMOSOME & DNA', image: bio_20 },
     { id: 21, name: 'EVOLUTION', image: bio_21 },
+    { id: 23, name: 'BIOTECHNOLOGY', image: bio_22, locked: true },
+    
 ];
 export const mdcatChemistryChapters = [
     { id: 1, name: 'FUNDAMENTALS OF CHEMISTRY', image: chem_1 },
@@ -141,6 +148,7 @@ export const mdcatChemistryChapters = [
     { id: 18, name: 'ALDEHYDES & KETONES', image: chem_18 },
     { id: 19, name: 'CARBOXYLIC ACIDS', image: chem_19 },
     { id: 20, name: 'BIOCHEMISTRY', image: chem_20 },
+    { id: 21, name: 'INDUSTRIAL CHEMISTRY', image: chem_21, locked: true },
 ];
 export const mdcatPhysicsChapters = [
     { id: 1, name: 'FORCE & MOTION', image: phy_1 },
@@ -157,6 +165,9 @@ export const mdcatPhysicsChapters = [
     { id: 12, name: 'DAWN OF MODERN PHYSICS', image: phy_12 },
     { id: 13, name: 'atomic spectra', image: phy_13 },
     { id: 14, name: 'nuclear physics', image: phy_14 },
+    { id: 15, name: 'Vectors & Equilibrium', image: phy_15, locked: true },
+    { id: 16, name: 'Fluids Dynamics', image: phy_16, locked: true },
+    { id: 17, name: 'Alternating Current', image: phy_17, locked: true },
 ];
 export const mdcatEnglishChapters = [
     { id: 1, name: 'NOUN', image: eng_1 },

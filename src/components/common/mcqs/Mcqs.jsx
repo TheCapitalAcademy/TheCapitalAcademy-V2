@@ -588,11 +588,11 @@ const Mcqs = () => {
 							<div class="banner-right">
 								<div class="Top-text"><b>Summary</b></div>
 								<div class="small-grid">
-									<div class="green"><b> {subject != 'mock' ? "Correct" : 'Biology'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/62</> : correctMcq?.length}</h7></div>
-									<div class="orange"><b>{subject != 'mock' ? "Unattempted" : 'Chemistry'} </b><h7>{subject == 'mock' ? <>{chemCorrectCout}/48</> : (mcqs.length - (correctMcq?.length + wrongMcq?.length))}</h7></div>
-									<div class="red"><b>{subject != 'mock' ? "Wrong" : 'Physics'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/48</> : wrongMcq?.length}</h7></div>
-									<div class="blue"><b>{subject != 'mock' ? "Percentage" : 'English'}</b><h7>{subject == 'mock' ? <>{engCorrectCount}/16</> : <>{((correctMcq?.length / mcqs.length) * 100).toFixed(1)} %</>}</h7></div>
-									{subject == 'mock' && <div class="pink"><b>Logical Reasoning</b><h7>{logicCorrectCount}/6</h7></div>}
+									<div class="green"><b> {subject != 'mock' ? "Correct" : 'Biology'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/81</> : correctMcq?.length}</h7></div>
+									<div class="orange"><b>{subject != 'mock' ? "Unattempted" : 'Chemistry'} </b><h7>{subject == 'mock' ? <>{chemCorrectCout}/45</> : (mcqs.length - (correctMcq?.length + wrongMcq?.length))}</h7></div>
+									<div class="red"><b>{subject != 'mock' ? "Wrong" : 'Physics'}</b><h7>{subject == 'mock' ? <>{bioCorrectCout}/36</> : wrongMcq?.length}</h7></div>
+									<div class="blue"><b>{subject != 'mock' ? "Percentage" : 'English'}</b><h7>{subject == 'mock' ? <>{engCorrectCount}/9</> : <>{((correctMcq?.length / mcqs.length) * 100).toFixed(1)} %</>}</h7></div>
+									{subject == 'mock' && <div class="pink"><b>Logical Reasoning</b><h7>{logicCorrectCount}/9</h7></div>}
 								</div>
 								<div class="button">
 									<button className='mt-4' onClick={() => setShowResultModel(true)}>Review</button>

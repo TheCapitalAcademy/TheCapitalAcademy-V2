@@ -126,6 +126,39 @@ function formatMarkdown(text: string) {
   return elements
 }
 
+/* ─── Rotating Introduction Messages ─── */
+const INTRO_MESSAGES = [
+  "Welcome! Capy is here to make MDCAT preparation clear, focused, and stress-free. ✨",
+  "Stuck on a concept? I'm Capy — let's work through it together. 🧠",
+  "Capy AI is built to help MDCAT aspirants master concepts and MCQs efficiently. 🎯",
+  "Clear concepts. High-yield MCQs. Smart revision. Let's begin. 📘",
+  "Your personal MDCAT tutor is ready. Ask away. 💬",
+  "Dreaming of a medical college? Start with the right question. 🩺",
+  "Every great doctor starts with a question. What's yours? ❓",
+  "One doubt at a time — let's push your MDCAT score higher. 📈",
+  "Capy AI is here: ask, learn, revise, and repeat. 🔁",
+  "Let's turn doubts into marks. 📊",
+  "Start your MDCAT preparation here. 🚀",
+  "What would you like to study today? 📖",
+  "Ask me an MCQ, a concept, or a quick revision tip. ⚡",
+  "MDCAT prep starts with one smart question. 💡",
+  "Confused today? Clear by tonight. Let's start. 🌙",
+  "Concepts first. Marks next. Capy AI at your service. 🤖",
+  "Turn your doubts into confidence. ✨",
+  "Your MDCAT journey just got easier. 🌱",
+  "Let's simplify biology, chemistry, and physics — together. 🧬",
+  "One question closer to your dream medical college. 🌟",
+  "I explain like a mentor, not a textbook. 📚",
+  "Stuck between options? Let's eliminate strategically. ✅",
+  "High-yield MDCAT prep starts here. 🎓",
+  "Revision, MCQs, and explanations — all in one place. 🛡️",
+  "No pressure. Just ask and learn. 🌿",
+  "Capy AI is ready. What's troubling you today? 🤔",
+  "Every doubt you clear brings you closer to the white coat. 🩺",
+  "Start small. Stay consistent. I'm right here with you. 🤍",
+  "Your dream medical college is waiting. Ask your first question. ✨",
+]
+
 /* ─── Component ─── */
 const CapyAIChat = () => {
   const { data: session, status } = useSession()
@@ -136,6 +169,7 @@ const CapyAIChat = () => {
   const [starters, setStarters] = useState<string[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [currentStreamingMessage, setCurrentStreamingMessage] = useState("")
+  const [introMessage, setIntroMessage] = useState("")
 
   // Whether the user has started chatting (more than the welcome message)
   const hasStartedChatting = messages.length > 1 || isStreaming
@@ -143,10 +177,12 @@ const CapyAIChat = () => {
   useEffect(() => {
     if (isOpen && messages.length === 0 && status === "authenticated") {
       loadStarters()
+      const randomIntro = INTRO_MESSAGES[Math.floor(Math.random() * INTRO_MESSAGES.length)]
+      setIntroMessage(randomIntro)
       setMessages([
         {
           role: "assistant",
-          content: "Hi! I'm Capy AI, your MDCAT Biology tutor. Ask me anything about biology topics!",
+          content: randomIntro,
         },
       ])
     }
@@ -350,7 +386,7 @@ const CapyAIChat = () => {
               <span className="font-semibold text-[15px] text-gray-800 leading-tight">Capy AI</span>
               <span className="text-[11px] text-gray-500 leading-tight flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                MDCAT Biology Tutor
+                MDCAT Tutor
               </span>
             </div>
 
@@ -369,7 +405,7 @@ const CapyAIChat = () => {
                 <Bot size={44} className="text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-800 mb-1">Welcome to Capy AI</h3>
-              <p className="text-gray-500 mb-6 text-sm">Sign in to start chatting with your biology tutor</p>
+              <p className="text-gray-500 mb-6 text-sm">Sign in to start chatting with your MDCAT tutor</p>
               <Button
                 color="primary"
                 size="lg"
@@ -388,7 +424,7 @@ const CapyAIChat = () => {
                     <Bot size={38} className="text-white" />
                   </div>
                   <h3 className="font-semibold text-gray-800 text-base">How can I help you today?</h3>
-                  <p className="text-gray-500 text-xs mt-0.5">Ask me anything about MDCAT Biology</p>
+                  <p className="text-gray-500 text-xs mt-0.5">{introMessage || "Ask me anything about MDCAT"}</p>
                 </div>
               )}
 

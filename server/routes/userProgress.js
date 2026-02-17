@@ -74,11 +74,11 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
         else {
             const queryCriteria = { course };
             const sampleSizes = {
-                biology: 62,
-                chemistry: 48,
-                physics: 48,
-                english: 16,
-                logic: 6
+                biology: 81,
+                chemistry: 45,
+                physics: 36,
+                english: 9,
+                logic: 9
             };
 
             for (const [subj, size] of Object.entries(sampleSizes)) {

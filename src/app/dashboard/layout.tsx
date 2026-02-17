@@ -36,23 +36,31 @@ const menuItems = [
     description: "Learning paths",
   },
   {
-    text: "Stats",
-    icon: BarChart3,
-    path: "/dashboard/analytics",
-    description: "User MCQ Progress Stats",
-  },
-  {
-    text: "Study Planner",
-    icon: Calendar,
-    path: "/dashboard/planner",
-    description: "Manage calendar",
-  },
-  {
     text: "Saved MCQ's",
     icon: Bookmark,
     path: "/dashboard/saved",
     description: "Saved content",
   },
+  {
+    text: "Capy AI",
+    icon: Sparkles,
+    path: "/dashboard/ai-settings",
+    description: "AI Assistant",
+  },
+    {
+    text: "Study Planner",
+    icon: Calendar,
+    path: "/dashboard/planner",
+    description: "Manage calendar",
+  },
+  
+  {
+    text: "Stats",
+    icon: BarChart3,
+    path: "/dashboard/analytics",
+    description: "User MCQ Progress Stats",
+  },
+
   {
     text: "Test Series",
     icon: Users,
@@ -80,24 +88,21 @@ const menuItems = [
       },
     ],
   },
-  {
-    text: "Subscriptions",
-    icon: Bell,
-    path: "/dashboard/subscriptions",
-    description: "Subscriptions",
-  },
-  {
-    text: "Capy AI",
-    icon: Sparkles,
-    path: "/dashboard/ai-settings",
-    description: "AI Assistant",
-  },
+  
   {
     text: "Profile",
     icon: User,
     path: "/dashboard/profile",
     description: "Profile",
   },
+  {
+    text: "Subscriptions",
+    icon: Bell,
+    path: "/dashboard/subscriptions",
+    description: "Subscriptions",
+  },
+  
+  
 ]
 
 const sidebarVariants = {

@@ -5,32 +5,38 @@ import { useInView } from "react-intersection-observer"
 import Link from "next/link"
 import Image from "next/image"
 
-// Import course images
-import png1 from "/public/courses/1.png"
-import png2 from "/public/courses/2.png"
-import png3 from "/public/courses/3.png"
-
 // Types
+interface CourseItem {
+    _id: string
+    cname: string
+    cdesc: string
+    cprice: number
+    cdiscount: number
+}
+
 interface CourseData {
     mdcat: {
         description: string
         price: number
+        discount: number
     }
     nums: {
         description: string
         price: number
+        discount: number
     }
     "mdcat+nums": {
         description: string
         price: number
+        discount: number
     }
 }
 
 const Pricing = () => {
     const [courseData, setCourseData] = useState<CourseData>({
-        mdcat: { description: "", price: 0 },
-        nums: { description: "", price: 0 },
-        "mdcat+nums": { description: "", price: 0 },
+        mdcat: { description: "", price: 0, discount: 0 },
+        nums: { description: "", price: 0, discount: 0 },
+        "mdcat+nums": { description: "", price: 0, discount: 0 },
     })
     const [loading, setLoading] = useState(true)
 
@@ -46,7 +52,7 @@ const Pricing = () => {
             id: "mdcat",
             title: "MDCAT MCQs Bank",
             subtitle: "Medical College Admission Test",
-            image: png1,
+            image: "/courses/1.png",
             gradient: "from-sky-500 via-indigo-500 to-blue-500",
             bgGradient: "from-sky-50 to-indigo-50",
             shadowColor: "shadow-sky-400/40",
@@ -63,7 +69,7 @@ const Pricing = () => {
             id: "nums",
             title: "NUMS MCQs Bank",
             subtitle: "National University Medical Sciences",
-            image: png2,
+            image: "/courses/2.png",
             gradient: "from-rose-500 via-pink-500 to-fuchsia-500",
             bgGradient: "from-rose-50 to-pink-50",
             shadowColor: "shadow-pink-400/30",
@@ -80,7 +86,7 @@ const Pricing = () => {
             id: "mdcat+nums",
             title: "MDCAT + NUMS Combo",
             subtitle: "Complete Medical Entrance Package",
-            image: png3,
+            image: "/courses/3.png",
             gradient: "from-emerald-500 via-teal-500 to-lime-400",
             bgGradient: "from-emerald-50 to-lime-50",
             shadowColor: "shadow-emerald-400/30",
@@ -96,25 +102,33 @@ const Pricing = () => {
     ]
 
 
-    // Fetch course data
+    // Fetch course data from backend
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true)
-                // Simulate API call
-                await new Promise((resolve) => setTimeout(resolve, 1000))
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+                const res = await fetch(`${baseUrl}/api/v1/course/all`)
+                if (!res.ok) throw new Error("Failed to fetch courses")
+                const data: CourseItem[] = await res.json()
 
-                setCourseData({
-                    mdcat: {
-                        description: "Comprehensive MDCAT preparation with 5000+ questions and expert guidance",
-                        price: 2999,
-                    },
-                    nums: { description: "Complete NUMS preparation with latest patterns and detailed solutions", price: 2499 },
-                    "mdcat+nums": {
-                        description: "Ultimate combo package for both MDCAT and NUMS with maximum savings",
-                        price: 4499,
-                    },
+                const mapped: CourseData = {
+                    mdcat: { description: "", price: 0, discount: 0 },
+                    nums: { description: "", price: 0, discount: 0 },
+                    "mdcat+nums": { description: "", price: 0, discount: 0 },
+                }
+
+                data.forEach((course) => {
+                    if (course.cname === "mdcat" || course.cname === "nums" || course.cname === "mdcat+nums") {
+                        mapped[course.cname] = {
+                            description: course.cdesc,
+                            price: course.cprice,
+                            discount: course.cdiscount ?? 0,
+                        }
+                    }
                 })
+
+                setCourseData(mapped)
             } catch (error) {
                 console.error("Error fetching course data:", error)
             } finally {
@@ -211,7 +225,7 @@ const Pricing = () => {
                                                 <div className="relative z-10 bg-red h-max flex items-center justify-center p-0">
                                                     <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl blur-xl" />
                                                     <Image
-                                                        src={course.image || "/placeholder.svg"}
+                                                        src={course.image}
                                                         alt={course.title}
                                                         width={440}
                                                         height={440}
@@ -225,7 +239,7 @@ const Pricing = () => {
                                             <div className="relative z-10 p-8 bg-white/80 backdrop-blur-sm">
                                                 {/* Price Section */}
                                                 <div className="flex items-center justify-between mb-6">
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-3">
                                                         <motion.div
                                                             className={`bg-gradient-to-r ${course.gradient} text-white px-6 py-3 rounded-2xl font-black  shadow-lg`}
                                                             whileHover={{ scale: 1.05 }}
@@ -233,12 +247,23 @@ const Pricing = () => {
                                                             {loading ? (
                                                                 <div className="w-20 h-8 bg-white/30 rounded animate-pulse" />
                                                             ) : (
-                                                                `PKR ${data.price.toLocaleString()}`
+                                                                `PKR ${data.discount > 0
+                                                                    ? Math.round(data.price - (data.price * data.discount) / 100).toLocaleString()
+                                                                    : data.price.toLocaleString()
+                                                                }`
                                                             )}
                                                         </motion.div>
-
+                                                        {!loading && data.discount > 0 && (
+                                                            <span className="text-gray-400 line-through font-semibold text-base">
+                                                                PKR {data.price.toLocaleString()}
+                                                            </span>
+                                                        )}
                                                     </div>
-                                                    <div className="bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold text-sm">Save 45%</div>
+                                                    {!loading && data.discount > 0 && (
+                                                        <div className="bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold text-sm">
+                                                            Save {data.discount}%
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 {/* Course Title */}

@@ -4,17 +4,21 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { closeSnackbar, useSnackbar } from "notistack"
-import { Close, CloseOutlined, Menu, RemoveCircle, X } from "@mui/icons-material"
-import { IconButton } from "@mui/material"
+import Close from "@mui/icons-material/Close"
+import Menu from "@mui/icons-material/Menu"
+import RemoveCircle from "@mui/icons-material/RemoveCircle"
+import IconButton from "@mui/material/IconButton"
 import Axios from "@/lib/Axios"
 import Image from "next/image"
 import logo from "/public/logo.png"
 import { ChevronDown } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Avatar, Badge, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, NavbarContent, user } from "@heroui/react"
+import { Avatar, Badge, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 import { signOut, useSession } from "next-auth/react"
-import { Books } from "@phosphor-icons/react/dist/ssr"
-import { Book, ChartDonutIcon, UserCircleGearIcon } from "@phosphor-icons/react"
+import { Books } from "@phosphor-icons/react/dist/ssr/Books"
+import { Book } from "@phosphor-icons/react/dist/ssr/Book"
+import { ChartDonut as ChartDonutIcon } from "@phosphor-icons/react/dist/ssr/ChartDonut"
+import { UserCircleGear as UserCircleGearIcon } from "@phosphor-icons/react/dist/ssr/UserCircleGear"
 
 // Custom NavLink component for Next.js
 export const NavLink = ({ href, children, className = "", activeClassName = "", ...props }) => {
@@ -50,7 +54,6 @@ const Navbar = () => {
   const [isMobileCoursesOpen, setIsMobileCoursesOpen] = useState(false)
   const [isMobileDashboardOpen, setIsMobileDashboardOpen] = useState(false)
   const { data: session, status } = useSession();
-  console.log(session)
   const isLogin = session?.user || false
 
   // Close all dropdowns function

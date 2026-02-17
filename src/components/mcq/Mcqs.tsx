@@ -250,11 +250,29 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
     }
   }
 
+  const [bookmarkedSet, setBookmarkedSet] = useState<Set<string>>(new Set())
+
   const handleBookmarked = async () => {
-    const res = await Axios.put("/api/v1/mcq/bookmark", { mcqId: mcqs[index]._id })
-    if (res.status === 200) {
-      toast.success("MCQ Bookmarked", { duration: 1500 })
-    } else {
+    const mcqId = mcqs[index]._id
+    const isCurrentlyBookmarked = bookmarkedSet.has(mcqId)
+    const endpoint = isCurrentlyBookmarked ? "/api/v1/mcq/unbookmark" : "/api/v1/mcq/bookmark"
+    try {
+      const res = await Axios.put(endpoint, { mcqId })
+      if (res.status === 200) {
+        setBookmarkedSet((prev) => {
+          const next = new Set(prev)
+          if (isCurrentlyBookmarked) {
+            next.delete(mcqId)
+          } else {
+            next.add(mcqId)
+          }
+          return next
+        })
+        toast.success(isCurrentlyBookmarked ? "Bookmark Removed" : "MCQ Bookmarked", { duration: 1500 })
+      } else {
+        toast.error("Something Went Wrong", { duration: 1500 })
+      }
+    } catch (error) {
       toast.error("Something Went Wrong", { duration: 1500 })
     }
   }
@@ -658,22 +676,9 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Chip
-                        color={
-                          mcqs[index]?.difficulty === "easy"
-                            ? "success"
-                            : mcqs[index]?.difficulty === "medium"
-                              ? "warning"
-                              : "danger"
-                        }
-                        variant="flat"
-                        className="capitalize"
-                      >
-                        {mcqs[index]?.difficulty === "medium" ? "Moderate" : mcqs[index]?.difficulty}
-                      </Chip>
-                      <Tooltip content="Bookmark this question">
+                      <Tooltip content={bookmarkedSet.has(mcqs[index]?._id) ? "Remove bookmark" : "Bookmark this question"}>
                         <Button isIconOnly variant="light" onClick={handleBookmarked} className="text-blue-600">
-                          <BookmarkSimple size={20} />
+                          <BookmarkSimple size={20} weight={bookmarkedSet.has(mcqs[index]?._id) ? "fill" : "regular"} />
                         </Button>
                       </Tooltip>
                     </div>
@@ -690,20 +695,6 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                         </Chip>
                       )}
                       <div className="flex items-center gap-2">
-                        <Chip
-                          color={
-                            mcqs[index]?.difficulty === "easy"
-                              ? "success"
-                              : mcqs[index]?.difficulty === "medium"
-                                ? "warning"
-                                : "danger"
-                          }
-                          variant="flat"
-                          size="sm"
-                          className="capitalize"
-                        >
-                          {mcqs[index]?.difficulty === "medium" ? "Moderate" : mcqs[index]?.difficulty}
-                        </Chip>
                         <Button
                           isIconOnly
                           variant="light"
@@ -711,7 +702,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           className="text-blue-600"
                           size="sm"
                         >
-                          <BookmarkSimple size={18} />
+                          <BookmarkSimple size={18} weight={bookmarkedSet.has(mcqs[index]?._id) ? "fill" : "regular"} />
                         </Button>
                       </div>
                     </div>
@@ -1165,7 +1156,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <PhosphorCheckCircle size={24} className="text-green-600 mx-auto mb-2" />
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Correct" : "Biology"}</p>
                           <p className="text-lg lg:text-xl font-bold text-green-600">
-                            {subject === "mock" ? `${bioCorrectCout}/62` : correctMcq?.length}
+                            {subject === "mock" ? `${bioCorrectCout}/81` : correctMcq?.length}
                           </p>
                         </CardBody>
                       </Card>
@@ -1174,7 +1165,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <PhosphorInfo size={24} className="text-orange-600 mx-auto mb-2" />
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Unattempted" : "Chemistry"}</p>
                           <p className="text-lg lg:text-xl font-bold text-orange-600">
-                            {subject === "mock" ? `${chemCorrectCout}/48` : mcqs.length - (correctMcq?.length + wrongMcq?.length)}
+                            {subject === "mock" ? `${chemCorrectCout}/45` : mcqs.length - (correctMcq?.length + wrongMcq?.length)}
                           </p>
                         </CardBody>
                       </Card>
@@ -1183,7 +1174,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <PhosphorXCircle size={24} className="text-red-600 mx-auto mb-2" />
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Wrong" : "Physics"}</p>
                           <p className="text-lg lg:text-xl font-bold text-red-600">
-                            {subject === "mock" ? `${phyCorrectCount}/48` : wrongMcq?.length}
+                            {subject === "mock" ? `${phyCorrectCount}/36` : wrongMcq?.length}
                           </p>
                         </CardBody>
                       </Card>
@@ -1193,7 +1184,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                           <p className="font-semibold text-sm">{subject !== "mock" ? "Percentage" : "English"}</p>
                           <p className="text-lg lg:text-xl font-bold text-blue-600">
                             {subject === "mock"
-                              ? `${engCorrectCount}/16`
+                              ? `${engCorrectCount}/9`
                               : `${((correctMcq?.length / mcqs.length) * 100).toFixed(1)}%`}
                           </p>
                         </CardBody>
@@ -1202,7 +1193,7 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                         <Card className="bg-purple-50 border-l-4 border-l-purple-500 col-span-2">
                           <CardBody className="text-center py-3">
                             <p className="font-semibold text-sm">Logical Reasoning</p>
-                            <p className="text-lg lg:text-xl font-bold text-purple-600">{logicCorrectCount}/6</p>
+                            <p className="text-lg lg:text-xl font-bold text-purple-600">{logicCorrectCount}/9</p>
                           </CardBody>
                         </Card>
                       )}

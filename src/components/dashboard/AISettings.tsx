@@ -138,7 +138,7 @@ const AISettings = () => {
     if (messages.length === 0 && status === "authenticated") {
       setMessages([{
         role: "assistant",
-        content: "Hi! I'm Capy AI, your MDCAT Biology tutor 🧬\n\nAsk me anything about biology topics — from cell biology to genetics, ecology to human physiology. I'm here to help you ace your MDCAT!",
+        content: "Hi! I'm Capy AI, your MDCAT tutor 🧬\n\nAsk me anything about Biology, Chemistry, Physics, English, and Logical Reasoning. I'm here to help you ace your MDCAT!",
       }])
     }
   }, [status])
@@ -331,7 +331,7 @@ const AISettings = () => {
               <h1 className="font-semibold text-lg text-gray-900 leading-tight">Capy AI</h1>
               <p className="text-xs text-gray-500 flex items-center gap-1">
                 {hasKey ? (
-                  <><span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> MDCAT Biology Tutor</>
+                  <><span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> MDCAT Tutor</>
                 ) : (
                   <><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" /> API key required</>
                 )}
@@ -359,7 +359,7 @@ const AISettings = () => {
                   </div>
                   <h2 className="text-xl font-semibold text-gray-800 mb-1">How can I help you today?</h2>
                   <p className="text-gray-500 text-sm max-w-md">
-                    Ask me anything about MDCAT Biology — cell structure, genetics, human physiology, ecology and more.
+                    Ask me anything about MDCAT — Biology, Chemistry, Physics, English, and Logical Reasoning.
                   </p>
 
                   {/* API key warning */}

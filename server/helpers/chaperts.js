@@ -20,6 +20,8 @@ export const mdcatBioChapters = [
     { id: 19, name: 'INHERITANCE',  },
     { id: 20, name: 'CHROMOSOME & DNA', },
     { id: 21, name: 'EVOLUTION', },
+    { id: 23, name: 'BIOTECHNOLOGY'}
+
 ];
 export const mdcatChemistryChapters = [
     { id: 1, name: 'FUNDAMENTALS OF CHEMISTRY', },
@@ -42,6 +44,8 @@ export const mdcatChemistryChapters = [
     { id: 18, name: 'ALDEHYDES & KETONES',  },
     { id: 19, name: 'CARBOXYLIC ACIDS',  },
     { id: 20, name: 'BIOCHEMISTRY',  },
+    { id: 21, name: 'INDUSTRIAL CHEMISTRY'}
+
 ];
 export const mdcatPhysicsChapters = [
     { id: 1, name: 'FORCE & MOTION',},
@@ -58,6 +62,9 @@ export const mdcatPhysicsChapters = [
     { id: 12, name: 'DAWN OF MODERN PHYSICS', },
     { id: 13, name: 'atomic spectra', },
     { id: 14, name: 'nuclear physics', },
+    { id: 15, name: "Vectors & Equilibrium"},
+    { id: 16, name: "Fluids Dynamics"},
+    { id: 17, name: "Alternating Current"}
 ];
 export const mdcatEnglishChapters = [
     { id: 1, name: 'NOUN', },

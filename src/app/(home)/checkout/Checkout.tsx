@@ -20,7 +20,7 @@ import {
 	Divider,
 } from "@mui/material"
 import { ArrowLeftIcon, ArrowUpLeftFromSquare, CheckCircle2Icon, CheckCircleIcon, CreditCardIcon, ShoppingCartIcon, TagIcon } from "lucide-react"
-import { DocumentScanner, DocumentScannerOutlined } from "@mui/icons-material"
+
 import { CurrencyDollarIcon } from "@phosphor-icons/react/dist/ssr"
 import jazzCash from "/public/assets/jazzcash.png"
 import easyPaisa from "/public/assets/easypaisa.png"
@@ -68,12 +68,13 @@ interface CourseData {
 	cprice: number
 	cdesc: string
 	features: string[]
+	cdiscount: number
 }
 
 
 
 export default function Checkout({ isSeries, seriesData = {} }) {
-	const [activeTab, setActiveTab] = useState(0)
+	const [activeTab, setActiveTab] = useState(1)
 	const [payMethod, setPayMethod] = useState("jazzcash")
 	const [imageUrl, setImageUrl] = useState(null)
 	const [showAlert, setShowAlert] = useState(false)
@@ -88,6 +89,7 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 		cdesc:
 			"",
 		features: [],
+		cdiscount: 0,
 	})
 	const [promoPrice, setPromoPrice] = useState(0)
 	const [promoCode, setPromoCode] = useState("")
@@ -128,8 +130,10 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 			else {
 				showSnackbar("Applied Successfully", "success");
 				const percentage = parseInt(res.data.priceDiscount); //10
-				const originalPrice = cData.cprice; //100*10/100
-				const totalPrice = (originalPrice * percentage / 100);
+				const discountedPrice = cData.cdiscount > 0
+					? Math.round(cData.cprice - (cData.cprice * cData.cdiscount) / 100)
+					: cData.cprice;
+				const totalPrice = (discountedPrice * percentage / 100);
 				setPromoPrice(totalPrice)
 			}
 		} catch (error) {
@@ -163,12 +167,11 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 				const encodedCourse = encodeURIComponent("mdcat+nums"); // Safely encode any special chars
 				res = await Axios.get(`/api/v1/course/${encodedCourse}`);
 			}
-			setCData(res.data);
+			setCData({ ...res.data, cdiscount: res.data.cdiscount ?? 0 });
 		}
 		fetch();
 	}, [promoPrice, course]);
 
-	const Features = ["Expert-curated question bank", "Regular updates and new content", "Mobile-friendly platform", "Progress Tracking", "24/7 customer support"]
 
 	const handleImageChange = (url) => {
 		if (url) {
@@ -209,7 +212,10 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 
 		try {
 			// Mock API call - replace with actual implementation
-			const finalPrice = cData.cprice - promoPrice;
+			const discountedPrice = cData.cdiscount > 0
+				? Math.round(cData.cprice - (cData.cprice * cData.cdiscount) / 100)
+				: cData.cprice;
+			const finalPrice = discountedPrice - promoPrice;
 			const res = await Axios.post('/api/v1/purchase/course', {
 				finalPrice: finalPrice,
 				course,
@@ -256,95 +262,14 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 
 			<div className="container mx-auto px-4 py-8">
 				<div className="max-w-7xl mx-auto">
-					{/* Progress Steps */}
-					<div className="mb-8">
-						<div className="flex items-center justify-center space-x-8">
-							<div className={`flex items-center space-x-2 ${activeTab >= 0 ? "text-primary" : "text-secondary2"}`}>
-								<div
-									className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab >= 0 ? "bg-primary text-white" : "bg-line text-secondary2"}`}
-								>
-									{activeTab > 0 ? (
-										<CheckCircleIcon className="w-5 h-5" />
-									) : (
-										<DocumentScanner className="w-5 h-5" />
-									)}
-								</div>
-								<span className="font-medium">Course Details</span>
-							</div>
-							<div className={`w-16 h-0.5 ${activeTab >= 1 ? "bg-primary" : "bg-line"}`}></div>
-							<div className={`flex items-center space-x-2 ${activeTab >= 1 ? "text-primary" : "text-secondary2"}`}>
-								<div
-									className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab >= 1 ? "bg-primary text-white" : "bg-line text-secondary2"}`}
-								>
-									<CreditCardIcon className="w-5 h-5" />
-								</div>
-								<span className="font-medium">Payment</span>
-							</div>
-						</div>
-					</div>
 
 					{/* Main Content */}
 					<div className="grid lg:grid-cols-12 gap-8">
 						{/* Main Content Area */}
 						<div className="lg:col-span-8">
 							<div className="bg-white rounded-2xl shadow-card border border-line overflow-hidden">
-								{/* Course Details Tab */}
-								{activeTab === 0 && (
-									<div className="p-8">
-										<div className="flex items-center space-x-3 mb-6">
-											<DocumentScannerOutlined className="w-6 h-6 text-primary" />
-											<h2 className="text-2xl font-bold text-black">Course Information</h2>
-										</div>
-
-										<div className="grid md:grid-cols-2 gap-8">
-											<div>
-												<div className="bg-gradient-to-br from-surface to-green/20 rounded-xl  mb-6">
-													<Image
-														src={isSeries ? seriesData.coverImageUrl : courseImages[course as keyof typeof courseImages] || courseImages.mdcat}
-														alt={course}
-														width={500}
-														height={300}
-														className="w-full h-48 object-fill rounded-lg"
-													/>
-												</div>
-
-												<div className="space-y-4">
-													<h3 className="text-lg font-semibold text-black">What's Included:</h3>
-													<div className="space-y-2">
-														{Features.map((feature, index) => (
-															<div key={index} className="flex items-center space-x-3">
-																<CheckCircleIcon className="w-5 h-5 text-success flex-shrink-0" />
-																<span className="text-secondary">{feature}</span>
-															</div>
-														))}
-													</div>
-												</div>
-											</div>
-
-											<div>
-												<h3 className="text-lg font-semibold text-black mb-4">Course Description</h3>
-												<div className="bg-surface rounded-xl p-6">
-													<p className="text-secondary leading-relaxed mb-6">{cData.cdesc}</p>
-												</div>
-											</div>
-										</div>
-
-										<div className="mt-8 pt-6 border-t border-line">
-											<Button
-												variant="contained"
-												size="large"
-												className="w-full md:w-auto px-8 py-3 bg-primary hover:bg-primary/90 text-white font-semibold"
-												onClick={() => setActiveTab(1)}
-											>
-												Proceed to Payment
-												<ArrowLeftIcon className="w-5 h-5 ml-2 rotate-180" />
-											</Button>
-										</div>
-									</div>
-								)}
-
-								{/* Payment Tab */}
-								{activeTab === 1 && (
+								{/* Payment */}
+								{(
 									<div className="p-8">
 										<div className="flex items-center space-x-3 mb-6">
 											<CreditCardIcon className="w-6 h-6 text-primary" />
@@ -443,16 +368,7 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 										<Divider className="my-8 pb-4" />
 
 										{/* Action Buttons */}
-										<div className="flex flex-col mt-4 sm:flex-row gap-4 justify-between">
-											<Button
-												variant="outlined"
-												className="border-secondary2 text-secondary2 hover:border-black hover:text-black"
-												onClick={() => setActiveTab(0)}
-												startIcon={<ArrowLeftIcon className="w-5 h-5" />}
-											>
-												Back to Course Details
-											</Button>
-
+										<div className="flex flex-col mt-4 sm:flex-row gap-4 justify-end">
 											<Button
 												variant="contained"
 												size="large"
@@ -483,14 +399,35 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 											<p className="font-semibold text-black">{isSeries ? seriesData.title : course.toUpperCase()} MCQ Bank</p>
 											<p className="text-sm text-secondary">Digital Course Access</p>
 										</div>
-										<span className="font-bold text-black">PKR {cData?.cprice?.toLocaleString()}</span>
+										<div className="text-right">
+											<span className="font-bold text-black">
+												PKR {cData?.cdiscount > 0
+													? Math.round(cData.cprice - (cData.cprice * cData.cdiscount) / 100).toLocaleString()
+													: cData?.cprice?.toLocaleString()}
+											</span>
+											{cData?.cdiscount > 0 && (
+												<span className="block text-sm text-gray-400 line-through">
+													PKR {cData?.cprice?.toLocaleString()}
+												</span>
+											)}
+										</div>
 									</div>
+
+									{cData?.cdiscount > 0 && (
+										<div className="flex justify-between items-center text-red-500">
+											<div className="flex items-center space-x-2">
+												<TagIcon className="w-4 h-4" />
+												<span className="font-medium">Course Discount</span>
+											</div>
+											<span className="font-bold">-{cData.cdiscount}%</span>
+										</div>
+									)}
 
 									{promoPrice > 0 && (
 										<div className="flex justify-between items-center text-success">
 											<div className="flex items-center space-x-2">
 												<TagIcon className="w-4 h-4" />
-												<span className="font-medium">Discount Applied</span>
+												<span className="font-medium">Promo Discount</span>
 											</div>
 											<span className="font-bold">-PKR {promoPrice?.toLocaleString()}</span>
 										</div>
@@ -501,7 +438,12 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 									<div className="flex justify-between items-center">
 										<span className="text-lg font-bold text-black">Total Amount</span>
 										<span className="text-2xl font-bold text-primary">
-											PKR {(cData.cprice - promoPrice)?.toLocaleString()}
+											PKR {(() => {
+												const discountedPrice = cData?.cdiscount > 0
+													? Math.round(cData.cprice - (cData.cprice * cData.cdiscount) / 100)
+													: cData.cprice;
+												return (discountedPrice - promoPrice)?.toLocaleString();
+											})()}
 										</span>
 									</div>
 								</div>

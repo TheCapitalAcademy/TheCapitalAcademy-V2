@@ -109,9 +109,8 @@ const Boards = () => {
                     src={board.src || "/placeholder.svg"}
                     alt={board.title}
                     fill
-                    className=" object-center transition-transform duration-700 "
+                    className="object-contain object-center transition-transform duration-700"
                     sizes="(max-width: 340px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    objectFit="fit"
                     priority={index < 3} // Prioritize first 3 images
                   />
 
