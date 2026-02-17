@@ -33,10 +33,11 @@ courseRouter.get('/active-courses', authUser, async (req, res) => {
     }
 });
 courseRouter.post('/', asyncWrapper(async (req, res) => {
-    const { courseName, courseDescription, coursePrice } = req.body;
+    const { courseName, courseDescription, coursePrice, courseDiscount } = req.body;
     const cname = courseName;
     const cdesc = courseDescription;
     const cprice = coursePrice;
+    const cdiscount = courseDiscount !== null && courseDiscount !== void 0 ? courseDiscount : 0;
     try {
         // Find the document
         let course = await CourseModel.findOne({ cname });
@@ -44,6 +45,7 @@ courseRouter.post('/', asyncWrapper(async (req, res) => {
             // Update the existing course
             course.cdesc = cdesc;
             course.cprice = cprice;
+            course.cdiscount = cdiscount;
             await course.save();
             res.status(200).json({ message: `${cname} Course Updated successfully` });
         }
@@ -53,6 +55,7 @@ courseRouter.post('/', asyncWrapper(async (req, res) => {
                 cname,
                 cdesc,
                 cprice,
+                cdiscount,
             });
             await course.save();
             res.status(200).json({ message: `${cname} Created successfully` });

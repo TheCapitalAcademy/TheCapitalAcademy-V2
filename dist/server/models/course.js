@@ -14,6 +14,10 @@ const courseSchema = new Schema({
         type: Number,
         required: true
     },
+    cdiscount: {
+        type: Number,
+        default: 0
+    },
 });
 // Prevent OverwriteModelError
 const CourseModel = ((_a = mongoose === null || mongoose === void 0 ? void 0 : mongoose.models) === null || _a === void 0 ? void 0 : _a.Course) || mongoose.model('Course', courseSchema);

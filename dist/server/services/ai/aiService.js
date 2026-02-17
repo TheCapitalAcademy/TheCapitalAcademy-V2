@@ -144,7 +144,7 @@ Do not mention other options unless necessary for comparison. Focus on teaching 
             model: 'gemini-2.5-flash',
             generationConfig: {
                 temperature: 0.7,
-                maxOutputTokens: 400,
+                maxOutputTokens: 1024,
                 topP: 0.95,
                 topK: 40,
             },

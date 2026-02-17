@@ -130,15 +130,41 @@ const AISettings = () => {
 
   const hasKey = config?.hasApiKey
 
+  const INTRO_MESSAGES = [
+    "Welcome! Capy is here to make your study sessions clear, focused, and stress-free. ✨",
+    "Stuck on a concept? I'm Capy — let's work through it together. 🧠",
+    "Capy AI is built to help you master concepts and ace your exams efficiently. 🎯",
+    "Clear concepts. Top grades. Smart revision. Let's begin. 📘",
+    "Your personal tutor is ready. Ask away. 💬",
+    "Every great achievement starts with a question. What's yours? ❓",
+    "One doubt at a time — let's push your scores higher. 📈",
+    "Capy AI is here: ask, learn, revise, and repeat. 🔁",
+    "Let's turn doubts into marks. 📊",
+    "Start your study session here. 🚀",
+    "What would you like to study today? 📖",
+    "Ask me about any topic, concept, or a quick revision tip. ⚡",
+    "Great learning starts with one smart question. 💡",
+    "Confused today? Clear by tonight. Let's start. 🌙",
+    "Concepts first. Marks next. Capy AI at your service. 🤖",
+    "Turn your doubts into confidence. ✨",
+    "Your study journey just got easier. 🌱",
+    "Let's simplify even the toughest topics — together. 🧬",
+    "No pressure. Just ask and learn. 🌿",
+    "Capy AI is ready. What's troubling you today? 🤔",
+    "Every doubt you clear brings you closer to success. 🩺",
+    "Start small. Stay consistent. I'm right here with you. 🤍",
+  ]
+
   useEffect(() => {
     fetchConfig()
   }, [])
 
   useEffect(() => {
     if (messages.length === 0 && status === "authenticated") {
+      const randomIntro = INTRO_MESSAGES[Math.floor(Math.random() * INTRO_MESSAGES.length)]
       setMessages([{
         role: "assistant",
-        content: "Hi! I'm Capy AI, your MDCAT tutor 🧬\n\nAsk me anything about Biology, Chemistry, Physics, English, and Logical Reasoning. I'm here to help you ace your MDCAT!",
+        content: randomIntro,
       }])
     }
   }, [status])
@@ -331,7 +357,7 @@ const AISettings = () => {
               <h1 className="font-semibold text-lg text-gray-900 leading-tight">Capy AI</h1>
               <p className="text-xs text-gray-500 flex items-center gap-1">
                 {hasKey ? (
-                  <><span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> MDCAT Tutor</>
+                  <><span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> Study Tutor</>
                 ) : (
                   <><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" /> API key required</>
                 )}
@@ -359,7 +385,7 @@ const AISettings = () => {
                   </div>
                   <h2 className="text-xl font-semibold text-gray-800 mb-1">How can I help you today?</h2>
                   <p className="text-gray-500 text-sm max-w-md">
-                    Ask me anything about MDCAT — Biology, Chemistry, Physics, English, and Logical Reasoning.
+                    Ask me anything about any subject — I'm here to help you learn and succeed.
                   </p>
 
                   {/* API key warning */}
@@ -466,9 +492,9 @@ const AISettings = () => {
         {!hasStartedChatting && hasKey && (
           <div className="px-4 lg:px-6 pb-2 flex gap-2 justify-center flex-wrap shrink-0">
             {[
-              { icon: <Lightbulb size={14} />, label: "Explain mitosis vs meiosis" },
-              { icon: <FileText size={14} />, label: "Summarize the Krebs cycle" },
-              { icon: <Sparkle size={14} />, label: "Types of immunity" },
+              { icon: <Lightbulb size={14} />, label: "Explain a concept" },
+              { icon: <FileText size={14} />, label: "Summarize a topic" },
+              { icon: <Sparkle size={14} />, label: "Give me an example" },
             ].map((starter, i) => (
               <button
                 key={i}
@@ -489,7 +515,7 @@ const AISettings = () => {
             <input
               ref={inputRef}
               type="text"
-              placeholder={hasKey ? "Ask Capy AI anything about biology..." : "Set up your API key to start chatting..."}
+              placeholder={hasKey ? "Ask Capy AI anything..." : "Set up your API key to start chatting..."}
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyPress}
