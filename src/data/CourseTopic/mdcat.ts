@@ -40,27 +40,27 @@ export const bioTopicsNamesMdcat = {
         "viral diseases",
         "prions & viroids"
     ],
-    'prokaryotes': [
-        "taxonomic classification",
-        "archaebacteria vs bacteria",
-        "classification of bacteria",
-        "cyanobacteria",
-        "structure of bacterial cell",
-        "nutrition & respiration in bacteria",
-        "growth & reproduction",
-        "importance & control of bacteria"
-    ],
-    'kingdom animalia': [
-        "classification of animals",
-        "phylum porifera & cnidaria",
-        "phylum platyhelminthes & aschelminthes",
-        "phylum mollusca & annelida",
-        "phylum arthropoda & echinodermata",
-        "hemichordata & chordata",
-        "class chondrichthyes & osteichthyes",
-        "class amphibia & reptilia",
-        "class aves & mammalia"
-    ],
+    // 'prokaryotes': [
+    //     "taxonomic classification",
+    //     "archaebacteria vs bacteria",
+    //     "classification of bacteria",
+    //     "cyanobacteria",
+    //     "structure of bacterial cell",
+    //     "nutrition & respiration in bacteria",
+    //     "growth & reproduction",
+    //     "importance & control of bacteria"
+    // ],
+    // 'kingdom animalia': [
+    //     "classification of animals",
+    //     "phylum porifera & cnidaria",
+    //     "phylum platyhelminthes & aschelminthes",
+    //     "phylum mollusca & annelida",
+    //     "phylum arthropoda & echinodermata",
+    //     "hemichordata & chordata",
+    //     "class chondrichthyes & osteichthyes",
+    //     "class amphibia & reptilia",
+    //     "class aves & mammalia"
+    // ],
     'life process in plants': [
         "nutrition in plants",
         "gaseous exchange in plants & stomata",
@@ -128,15 +128,15 @@ export const bioTopicsNamesMdcat = {
         "disorders of nervous system & diagnostic tests",
         "effect of drugs on nervous system"
     ],
-    'chemical coordination': [
-        "introduction",
-        "neurosecretory role of hypothalamus",
-        "pituitary gland",
-        "thyroid & parathyroid glands",
-        "pancreas & adrenal gland",
-        "gonads & other endocrine glands",
-        "feedback mechanism"
-    ],
+    // 'chemical coordination': [
+    //     "introduction",
+    //     "neurosecretory role of hypothalamus",
+    //     "pituitary gland",
+    //     "thyroid & parathyroid glands",
+    //     "pancreas & adrenal gland",
+    //     "gonads & other endocrine glands",
+    //     "feedback mechanism"
+    // ],
     'behavior': [
         "introduction",
         "innate behavior",

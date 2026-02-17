@@ -142,7 +142,7 @@ const Header = ({ isActiveCourse }: HeaderProps) => {
               >
                 <Sparkles className="w-5 h-5 text-[#1757ab]" />
                 <span className="text-[#1757ab] font-semibold tracking-tight">
-                  🎉 50% OFF Limited Time Offer
+                  🎉 75% OFF Ramadan Offer 🌙
                 </span>
               </motion.div>
 
