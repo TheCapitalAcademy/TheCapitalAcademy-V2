@@ -131,10 +131,28 @@ const AISettings = () => {
   const hasKey = config?.hasApiKey
 
   const INTRO_MESSAGES = [
-    "Welcome! Capy is here to make MDCAT preparation clear, focused, and stress-free. ✨\nStuck on a concept? I’m Capy — let’s work through it together. 🧠 \nCapy AI is built to help MDCAT aspirants master concepts and MCQs efficiently. 🎯Clear concepts. High-yield MCQs. Smart revision. Let’s begin. 📘Your personal MDCAT tutor is ready. Ask away. 💬",
-    "Dreaming of a medical college? Start with the right question. 🩺\nEvery great doctor starts with a question. What’s yours? ❓\nOne doubt at a time — let’s push your MDCAT score higher. 📈 \n\nCapy AI is here: ask, learn, revise, and repeat. 🔁\nLet’s turn doubts into marks. 📊 \n\nStart your MDCAT preparation here. 🚀\nWhat would you like to study today? 📖 \n\nAsk me an MCQ, a concept, or a quick revision tip. ⚡\nMDCAT prep starts with one smart question. 💡\nConfused today? Clear by tonight. Let’s start. 🌙\nConcepts first. Marks next. Capy AI at your service. 🤖\nTurn your doubts into confidence. ✨\nYour MDCAT journey just got easier. 🌱\nLet’s simplify biology, chemistry, and physics — together. 🧬",
+    "Welcome! Capy is here to make your study sessions clear, focused, and stress-free. ✨",
+    "Stuck on a concept? I'm Capy — let's work through it together. 🧠",
     "Capy AI is built to help you master concepts and ace your exams efficiently. 🎯",
-    "One question closer to your dream medical college. 🌟\nI explain like a mentor, not a textbook. 📚\nStuck between options? Let’s eliminate strategically. ✅\nHigh-yield MDCAT prep starts here. 🎓\nRevision, MCQs, and explanations — all in one place. 🛡️\nNo pressure. Just ask and learn. 🌿\nCapy AI is ready. What’s troubling you today? 🤔 \n\nEvery doubt you clear brings you closer to the white coat. 🩺\nStart small. Stay consistent. I’m right here with you. 🤍\nYour dream medical college is waiting. Ask your first question. ✨",
+    "Clear concepts. Top grades. Smart revision. Let's begin. 📘",
+    "Your personal tutor is ready. Ask away. 💬",
+    "Every great achievement starts with a question. What's yours? ❓",
+    "One doubt at a time — let's push your scores higher. 📈",
+    "Capy AI is here: ask, learn, revise, and repeat. 🔁",
+    "Let's turn doubts into marks. 📊",
+    "Start your study session here. 🚀",
+    "What would you like to study today? 📖",
+    "Ask me about any topic, concept, or a quick revision tip. ⚡",
+    "Great learning starts with one smart question. 💡",
+    "Confused today? Clear by tonight. Let's start. 🌙",
+    "Concepts first. Marks next. Capy AI at your service. 🤖",
+    "Turn your doubts into confidence. ✨",
+    "Your study journey just got easier. 🌱",
+    "Let's simplify even the toughest topics — together. 🧬",
+    "No pressure. Just ask and learn. 🌿",
+    "Capy AI is ready. What's troubling you today? 🤔",
+    "Every doubt you clear brings you closer to success. 🩺",
+    "Start small. Stay consistent. I'm right here with you. 🤍",
   ]
 
   useEffect(() => {
