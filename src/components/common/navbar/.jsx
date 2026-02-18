@@ -40,7 +40,7 @@
         if (user?.isMdcat) router.push('/dashboard/subject/mdcat')
         else {
             showCenteredSnackbar('Checkout course to proceed further!', 'info')
-            router.push('/checkout?mdcat')
+            router.push('/checkout?course=mdcat')
         }
         } catch (err) {
         console.log(err)
@@ -55,7 +55,7 @@
         if (user?.isNums) router.push('/dashboard/subject/nums')
         else {
             showCenteredSnackbar('Checkout course to proceed further!', 'info')
-            router.push('/checkout?nums')
+            router.push('/checkout?course=nums')
         }
         } catch (err) {
         console.log(err)
@@ -78,9 +78,9 @@
                 <div className="relative group">
                 <button className="hover:text-blue-600">Courses</button>
                 <div className="absolute hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-40">
-                    <Link href="/checkout?mdcat" className="block px-4 py-2 hover:bg-gray-100">MDCAT</Link>
-                    <Link href="/checkout?nums" className="block px-4 py-2 hover:bg-gray-100">NUMS</Link>
-                    <Link href="/checkout?mdcat+nums" className="block px-4 py-2 hover:bg-gray-100">MDCAT + NUMS</Link>
+                    <Link href="/checkout?course=mdcat" className="block px-4 py-2 hover:bg-gray-100">MDCAT</Link>
+                    <Link href="/checkout?course=nums" className="block px-4 py-2 hover:bg-gray-100">NUMS</Link>
+                    <Link href="/checkout?course=mdcat%2Bnums" className="block px-4 py-2 hover:bg-gray-100">MDCAT + NUMS</Link>
                 </div>
                 </div>
                 <div className="relative group">
@@ -117,9 +117,9 @@
             <button onClick={handleMdcat} className="block">MDCAT MCQs</button>
             <div className="border-t pt-2">
                 <p className="font-semibold">Courses</p>
-                <Link href="/checkout?mdcat" className="block">MDCAT</Link>
-                <Link href="/checkout?nums" className="block">NUMS</Link>
-                <Link href="/checkout?mdcat+nums" className="block">MDCAT + NUMS</Link>
+                <Link href="/checkout?course=mdcat" className="block">MDCAT</Link>
+                <Link href="/checkout?course=nums" className="block">NUMS</Link>
+                <Link href="/checkout?course=mdcat%2Bnums" className="block">MDCAT + NUMS</Link>
             </div>
             <div className="border-t pt-2">
                 <p className="font-semibold">Dashboard</p>

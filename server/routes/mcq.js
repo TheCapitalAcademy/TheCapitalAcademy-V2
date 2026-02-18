@@ -192,12 +192,21 @@ mcqRouter.get('/search', asyncWrapper(async (req, res) => {
 //
 mcqRouter.post('/count', authUser, asyncWrapper(async (req, res) => {
     try {
-        const course = req.body.course?.trim();
+        let course = req.body.course?.trim();
         const subject = req.body.subject?.trim();
         const chapter = req.body.chapter?.trim();
         const category = req.body.category?.trim();
         const topics = req.body?.topic; // array of topics
         const userId = req.user.id;
+
+        // Resolve mdcatNums combo course to actual DB course per subject
+        if (course === 'mdcatNums') {
+            if (subject === 'logic') {
+                course = 'mdcat';
+            } else {
+                course = 'nums';
+            }
+        }
 
         let matchCriteria = { course, subject, chapter };
 

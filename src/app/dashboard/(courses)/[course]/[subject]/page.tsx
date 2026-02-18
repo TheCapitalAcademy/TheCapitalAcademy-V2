@@ -14,7 +14,7 @@ const Page = async ({ params }) => {
     const { course, subject } = await params;
     console.log(course, subject);
     console.log(params);
-    if (!['nums', 'mdcat', 'trial'].includes(course)) {
+    if (!['nums', 'mdcat', 'trial', 'mdcatNums'].includes(course)) {
         notFound();
     }
     let chapters = []
@@ -38,6 +38,19 @@ const Page = async ({ params }) => {
             chapters = mdcatPhysicsChapters;
         } else if (subject == 'english') {
             chapters = mdcatEnglishChapters;
+        } else if (subject == 'logic') {
+            chapters = mdcatLogicChapter;
+        }
+    } else if (course === 'mdcatNums') {
+        // Combo: Bio, Chem, Physics, English from NUMS; Logic from MDCAT
+        if (subject == 'biology') {
+            chapters = numsBioChapters;
+        } else if (subject == 'chemistry') {
+            chapters = numsChemistryChapters;
+        } else if (subject == 'physics') {
+            chapters = numsPhysicsChapters;
+        } else if (subject == 'english') {
+            chapters = numsEnglishChapters;
         } else if (subject == 'logic') {
             chapters = mdcatLogicChapter;
         }

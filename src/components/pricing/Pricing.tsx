@@ -56,7 +56,7 @@ const Pricing = () => {
             gradient: "from-sky-500 via-indigo-500 to-blue-500",
             bgGradient: "from-sky-50 to-indigo-50",
             shadowColor: "shadow-sky-400/40",
-            link: "/checkout?mdcat",
+            link: "/checkout?course=mdcat",
             badge: "Most Popular",
             badgeColor: "bg-indigo-600",
             features: [
@@ -78,7 +78,7 @@ const Pricing = () => {
             gradient: "from-rose-500 via-pink-500 to-fuchsia-500",
             bgGradient: "from-rose-50 to-pink-50",
             shadowColor: "shadow-pink-400/30",
-            link: "/checkout?nums",
+            link: "/checkout?course=nums",
             badge: "Updated 2024",
             badgeColor: "bg-fuchsia-600",
             features: [
@@ -100,7 +100,7 @@ const Pricing = () => {
             gradient: "from-emerald-500 via-teal-500 to-lime-400",
             bgGradient: "from-emerald-50 to-lime-50",
             shadowColor: "shadow-emerald-400/30",
-            link: "/checkout?mdcat+nums",
+            link: "/checkout?course=mdcat%2Bnums",
             badge: "Best Value",
             badgeColor: "bg-teal-600",
             features: [

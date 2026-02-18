@@ -136,7 +136,7 @@ const Navbar = () => {
         router.push("/dashboard/subject/mdcat")
       } else if (!response?.data?.user?.isMdcat) {
         showCenteredSnackbar("Checkout course to procede further !", "info")
-        router.push("/checkout?mdcat")
+        router.push("/checkout?course=mdcat")
       } else {
         router.push("/dashboard")
       }
@@ -153,7 +153,7 @@ const Navbar = () => {
         router.push("/dashboard/subject/nums")
       } else if (!response?.data?.user?.isNums) {
         showCenteredSnackbar("Checkout course to procede further!", "info")
-        router.push("/checkout?nums")
+        router.push("/checkout?course=nums")
       }
     } catch (error) {
       router.push("/dashboard")
@@ -282,7 +282,7 @@ const Navbar = () => {
                       NUMS
                     </Link>
                     <Link
-                      href="/checkout?course=mdcat+nums"
+                      href="/checkout?course=mdcat%2Bnums"
                       onClick={closeAllDropdowns}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f0f6fd] hover:text-[#1757ab] transition-colors duration-150"
                     >
@@ -478,7 +478,7 @@ const Navbar = () => {
                   onClick={toggleMobileMenu}
                   className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors duration-200"
                 >
-                  <CloseOutlined className="h-6 w-6" />
+                  <Close className="h-6 w-6" />
                 </motion.button>
               </div>
 
@@ -579,21 +579,21 @@ const Navbar = () => {
                         className="ml-4 mt-1 space-y-1 overflow-hidden"
                       >
                         <Link
-                          href="/checkout?mdcat"
+                          href="/checkout?course=mdcat"
                           className="block px-3 py-2 rounded-md text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors duration-200"
                           onClick={toggleMobileMenu}
                         >
                           MDCAT
                         </Link>
                         <Link
-                          href="/checkout?nums"
+                          href="/checkout?course=nums"
                           className="block px-3 py-2 rounded-md text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors duration-200"
                           onClick={toggleMobileMenu}
                         >
                           NUMS
                         </Link>
                         <Link
-                          href="/checkout?mdcat+nums"
+                          href="/checkout?course=mdcat%2Bnums"
                           className="block px-3 py-2 rounded-md text-sm text-gray-600 hover:text-primary-600 hover:bg-gray-50 transition-colors duration-200"
                           onClick={toggleMobileMenu}
                         >

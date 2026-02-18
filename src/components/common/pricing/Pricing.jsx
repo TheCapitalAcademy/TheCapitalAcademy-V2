@@ -105,7 +105,7 @@ const Pricing = () => {
                         >
                             {/* Mdcat swiper/\ */}
                             <SwiperSlide className='d-flex justify-content-center '>
-                                <Link to={{ pathname: "/checkout", search: "mdcat" }}>
+                                <Link to={{ pathname: "/checkout", search: "?course=mdcat" }}>
                                     <div className="course-card mb-2 col-md-12">
                                         <div>
                                             <div className="top pt-2">
@@ -131,7 +131,7 @@ const Pricing = () => {
                             </SwiperSlide>
                             <SwiperSlide className='d-flex justify-content-center'>
                                 <div className="course-card mb-2 col-md-12">
-                                    <Link to={{ pathname: "/checkout", search: "nums" }}>
+                                    <Link to={{ pathname: "/checkout", search: "?course=nums" }}>
                                         <div>
                                             <div className="top pt-2">
                                                 <img src={png2} alt="" />
@@ -155,7 +155,7 @@ const Pricing = () => {
                                 </div>
                             </SwiperSlide>
                             <SwiperSlide className='d-flex justify-content-center'>
-                                <Link to={{ pathname: "/checkout", search: "mdcat+nums" }}>
+                                <Link to={{ pathname: "/checkout", search: "?course=mdcat%2Bnums" }}>
                                     <div className="course-card mb-2 col-md-12">
                                         <div>
                                             <div className="top pt-2">

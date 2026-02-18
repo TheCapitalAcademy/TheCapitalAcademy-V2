@@ -47,7 +47,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { toast } from "react-hot-toast"
 
-const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
+const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
   console.log(mcqData)
   const router = useRouter()
   const [correctMcq, setCorrectMcq] = useState([])
@@ -669,6 +669,16 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                       <h3 className="text-xl font-bold">
                         Question {index + 1}/{mcqs?.length}
                       </h3>
+                      {(subject || chapter || topic) && (
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                          <span className="text-gray-300 ">|</span>
+                          {subject && <span className="capitalize font-medium text-blue-600 bg-gray-200 px-1 rounded">{decodeURIComponent(subject)}</span>}
+                          {subject && (chapter || topic) && <span className="text-gray-300">/</span>}
+                          {chapter && <span className="capitalize text-gray-600">{decodeURIComponent(chapter)}</span>}
+                          {chapter && topic && <span className="text-gray-300">/</span>}
+                          {topic && <span className="capitalize text-purple-600 font-medium">{decodeURIComponent(topic)}</span>}
+                        </div>
+                      )}
                       {mcqs[index]?.info && (
                         <Chip color="secondary" variant="flat" className="capitalize">
                           {mcqs[index]?.info}
@@ -689,11 +699,22 @@ const Mcqs = ({ subject, chapter, isSeries, mcqData }) => {
                 <CardHeader className="lg:hidden  flex-shrink-0">
                   <div className="w-full space-y-3">
                     <div className="flex items-center justify-between">
-                      {mcqs[index]?.info && (
-                        <Chip color="secondary" variant="flat" size="sm" className="capitalize">
-                          {mcqs[index]?.info}
-                        </Chip>
-                      )}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {(subject || chapter || topic) && (
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            {subject && <span className="capitalize font-medium text-blue-600">{decodeURIComponent(subject)}</span>}
+                            {subject && (chapter || topic) && <span className="text-gray-300">/</span>}
+                            {chapter && <span className="capitalize text-gray-600 truncate max-w-[120px]">{decodeURIComponent(chapter)}</span>}
+                            {chapter && topic && <span className="text-gray-300">/</span>}
+                            {topic && <span className="capitalize text-purple-600 font-medium truncate max-w-[100px]">{decodeURIComponent(topic)}</span>}
+                          </div>
+                        )}
+                        {mcqs[index]?.info && (
+                          <Chip color="secondary" variant="flat" size="sm" className="capitalize">
+                            {mcqs[index]?.info}
+                          </Chip>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         <Button
                           isIconOnly

@@ -48,7 +48,7 @@ const Subject = memo<SubjectProps>(({ name, img, link, isLocked = false }) => {
                   src={img}
                   alt={name}
                   variants={imageVariants}
-                  className="w-full h-full object-fill scale-120 p-0"
+                  className="w-full h-full object-cover p-0"
                   loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement

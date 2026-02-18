@@ -164,7 +164,7 @@ export default function Checkout({ isSeries, seriesData = {} }) {
 				res = await Axios.get('/api/v1/course/nums');
 			}
 			else {
-				const encodedCourse = encodeURIComponent("mdcat+nums"); // Safely encode any special chars
+				const encodedCourse = encodeURIComponent(course); // Encode the actual course parameter
 				res = await Axios.get(`/api/v1/course/${encodedCourse}`);
 			}
 			setCData({ ...res.data, cdiscount: res.data.cdiscount ?? 0 });

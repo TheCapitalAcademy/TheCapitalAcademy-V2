@@ -67,6 +67,15 @@ const Page = ({ params }: PageProps) => {
         else if (subject === "physics") setTopics(physicsTopicsNamesNums[chapterName] || [])
         else if (["english", "logic"].includes(subject)) setTopics([chapterName])
         else if (subject === "mock") setTopics(["Mock Test"])
+      } else if (course === "mdcatNums") {
+        // Combo: Bio, Chem, Physics, English from NUMS; Logic from MDCAT
+        if (subject === "logic") {
+          setTopics([chapterName])
+        } else if (subject === "biology") setTopics(bioTopicsNamesNums[chapterName] || [])
+        else if (subject === "chemistry") setTopics(chemistryTopicsNamesNums[chapterName] || [])
+        else if (subject === "physics") setTopics(physicsTopicsNamesNums[chapterName] || [])
+        else if (subject === "english") setTopics([chapterName])
+        else if (subject === "mock") setTopics(["Mock Test"])
       }
     }
 

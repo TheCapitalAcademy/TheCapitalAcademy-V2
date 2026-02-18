@@ -9,6 +9,8 @@ import {
 import { MessageCircle, Send, X, Bot, Lightbulb, FileText, Sparkle } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { toast } from "react-hot-toast"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
 
@@ -17,113 +19,51 @@ interface Message {
   content: string
 }
 
-/* ─── Lightweight Markdown Renderer ─── */
-function formatMarkdown(text: string) {
-  const lines = text.split("\n")
-  const elements: React.ReactNode[] = []
-  let listItems: React.ReactNode[] = []
-  let listKey = 0
-
-  const flushList = () => {
-    if (listItems.length > 0) {
-      elements.push(
-        <ul key={`list-${listKey++}`} className="list-disc list-inside space-y-1 my-1.5">
-          {listItems}
-        </ul>
-      )
-      listItems = []
-    }
-  }
-
-  const formatInline = (raw: string, key: number): React.ReactNode => {
-    // Process bold (**text**) and italic (*text*) with a regex pipeline
-    const parts: React.ReactNode[] = []
-    // Match **bold**, *italic*, and plain text
-    const regex = /(\*\*(.+?)\*\*|\*(.+?)\*)/g
-    let lastIndex = 0
-    let match
-
-    while ((match = regex.exec(raw)) !== null) {
-      // Push text before match
-      if (match.index > lastIndex) {
-        parts.push(raw.slice(lastIndex, match.index))
-      }
-      if (match[2]) {
-        // Bold
-        parts.push(<strong key={`b-${key}-${match.index}`} className="font-semibold">{match[2]}</strong>)
-      } else if (match[3]) {
-        // Italic
-        parts.push(<em key={`i-${key}-${match.index}`}>{match[3]}</em>)
-      }
-      lastIndex = regex.lastIndex
-    }
-    if (lastIndex < raw.length) {
-      parts.push(raw.slice(lastIndex))
-    }
-    return parts.length > 0 ? parts : raw
-  }
-
-  lines.forEach((line, idx) => {
-    const trimmed = line.trimStart()
-
-    // Bullet list items: "* text", "- text", "• text"
-    const bulletMatch = trimmed.match(/^(?:[\*\-•])\s+(.+)/)
-    if (bulletMatch) {
-      listItems.push(
-        <li key={`li-${idx}`} className="text-sm leading-relaxed">
-          {formatInline(bulletMatch[1], idx)}
-        </li>
-      )
-      return
-    }
-
-    // Numbered list items: "1. text", "1) text"
-    const numMatch = trimmed.match(/^\d+[.)]\s+(.+)/)
-    if (numMatch) {
-      listItems.push(
-        <li key={`li-${idx}`} className="text-sm leading-relaxed">
-          {formatInline(numMatch[1], idx)}
-        </li>
-      )
-      return
-    }
-
-    flushList()
-
-    // Empty line → spacer
-    if (trimmed === "") {
-      elements.push(<div key={`sp-${idx}`} className="h-1.5" />)
-      return
-    }
-
-    // Heading: "## text" or "# text"
-    if (trimmed.startsWith("## ")) {
-      elements.push(
-        <p key={`h-${idx}`} className="font-bold text-sm mt-2 mb-0.5">
-          {formatInline(trimmed.slice(3), idx)}
-        </p>
-      )
-      return
-    }
-    if (trimmed.startsWith("# ")) {
-      elements.push(
-        <p key={`h-${idx}`} className="font-bold text-[15px] mt-2 mb-0.5">
-          {formatInline(trimmed.slice(2), idx)}
-        </p>
-      )
-      return
-    }
-
-    // Normal paragraph
-    elements.push(
-      <p key={`p-${idx}`} className="text-sm leading-relaxed">
-        {formatInline(trimmed, idx)}
-      </p>
-    )
-  })
-
-  flushList()
-  return elements
+/* ─── Markdown Component Styles ─── */
+const MarkdownContent = ({ content }: { content: string }) => {
+  return (
+    <div className="markdown-content text-sm leading-relaxed">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          h1: ({ node, ...props }) => <h1 className="text-lg font-bold mt-3 mb-2" {...props} />,
+          h2: ({ node, ...props }) => <h2 className="text-base font-bold mt-2.5 mb-1.5" {...props} />,
+          h3: ({ node, ...props }) => <h3 className="text-[15px] font-semibold mt-2 mb-1" {...props} />,
+          h4: ({ node, ...props }) => <h4 className="text-sm font-semibold mt-1.5 mb-0.5" {...props} />,
+          p: ({ node, ...props }) => <p className="text-sm leading-relaxed mb-2" {...props} />,
+          ul: ({ node, ...props }) => <ul className="list-disc list-inside space-y-1 my-2 ml-2" {...props} />,
+          ol: ({ node, ...props }) => <ol className="list-decimal list-inside space-y-1 my-2 ml-2" {...props} />,
+          li: ({ node, ...props }) => <li className="text-sm leading-relaxed" {...props} />,
+          strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+          em: ({ node, ...props }) => <em className="italic" {...props} />,
+          code: ({ node, inline, ...props }: any) =>
+            inline ? (
+              <code className="bg-gray-100 text-purple-600 px-1.5 py-0.5 rounded text-xs font-mono" {...props} />
+            ) : (
+              <code className="block bg-gray-100 p-2 rounded text-xs font-mono overflow-x-auto my-2" {...props} />
+            ),
+          pre: ({ node, ...props }) => <pre className="bg-gray-100 p-2 rounded overflow-x-auto my-2" {...props} />,
+          table: ({ node, ...props }) => (
+            <div className="overflow-x-auto my-3">
+              <table className="min-w-full border-collapse border border-gray-300 text-sm" {...props} />
+            </div>
+          ),
+          thead: ({ node, ...props }) => <thead className="bg-gray-100" {...props} />,
+          tbody: ({ node, ...props }) => <tbody {...props} />,
+          tr: ({ node, ...props }) => <tr className="border-b border-gray-300" {...props} />,
+          th: ({ node, ...props }) => (
+            <th className="border border-gray-300 px-3 py-2 text-left font-semibold" {...props} />
+          ),
+          td: ({ node, ...props }) => <td className="border border-gray-300 px-3 py-2" {...props} />,
+          blockquote: ({ node, ...props }) => (
+            <blockquote className="border-l-4 border-purple-300 pl-3 py-1 my-2 italic text-gray-700" {...props} />
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  )
 }
 
 /* ─── Rotating Introduction Messages ─── */
@@ -453,7 +393,7 @@ const CapyAIChat = () => {
                           }`}
                         >
                           {message.role === "assistant" ? (
-                            <div className="space-y-0.5">{formatMarkdown(message.content)}</div>
+                            <MarkdownContent content={message.content} />
                           ) : (
                             <p className="text-sm leading-relaxed">{message.content}</p>
                           )}
@@ -473,7 +413,7 @@ const CapyAIChat = () => {
                           <Bot size={14} className="text-white" />
                         </div>
                         <div className="max-w-[78%] bg-white/80 backdrop-blur-sm text-gray-800 rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm border border-white/50">
-                          <div className="space-y-0.5">{formatMarkdown(currentStreamingMessage)}</div>
+                          <MarkdownContent content={currentStreamingMessage} />
                           <div className="flex items-center gap-1 mt-2">
                             <span className="capy-dot w-1.5 h-1.5 rounded-full bg-purple-400" />
                             <span className="capy-dot w-1.5 h-1.5 rounded-full bg-purple-400" />

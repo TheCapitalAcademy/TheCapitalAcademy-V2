@@ -91,10 +91,45 @@ const Page = async ({ params }) => {
     ];
 
 
+    const mdcatNumsSubjectData = [
+        {
+            name: "BIOLOGY",
+            img: bio,
+            link: '/dashboard/mdcatNums/biology'
+        },
+        {
+            name: "CHEMISTRY",
+            img: chem,
+            link: '/dashboard/mdcatNums/chemistry'
+        },
+        {
+            name: "PHYSICS",
+            img: phy,
+            link: '/dashboard/mdcatNums/physics'
+        },
+        {
+            name: "ENGLISH",
+            img: eng,
+            link: '/dashboard/mdcatNums/english'
+        },
+        {
+            name: "LOGICAL REASONING",
+            img: logic,
+            link: '/dashboard/mdcatNums/logic'
+        },
+        {
+            name: "MOCK TESTS",
+            img: mock,
+            link: '/dashboard/mdcatNums/mock/test'
+        },
+    ];
+
     if (course === "nums") {
         data = numsSubjectData;
     } else if (course === "mdcat") {
         data = mdcatSubjectData;
+    } else if (course === "mdcatNums") {
+        data = mdcatNumsSubjectData;
     } else if (course == "trial") {
         data = [
             {

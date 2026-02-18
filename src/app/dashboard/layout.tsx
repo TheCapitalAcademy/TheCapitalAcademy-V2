@@ -48,14 +48,14 @@ const menuItems = [
     description: "AI Assistant",
   },
     {
-    text: "Study Planner",
+    text: "Schedule Maker",
     icon: Calendar,
     path: "/dashboard/planner",
     description: "Manage calendar",
   },
   
   {
-    text: "Stats",
+    text: "Performance Analyzer",
     icon: BarChart3,
     path: "/dashboard/analytics",
     description: "User MCQ Progress Stats",

@@ -36,6 +36,15 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
         course = 'mdcat';
     }
 
+    // Resolve mdcatNums combo course to actual DB course per subject
+    if (course === 'mdcatNums') {
+        if (subject === 'logic') {
+            course = 'mdcat';
+        } else {
+            course = 'nums';
+        }
+    }
+
     let mcqs = [];
 
     try {

@@ -177,12 +177,21 @@ mcqRouter.get('/search', asyncWrapper(async (req, res) => {
 mcqRouter.post('/count', authUser, asyncWrapper(async (req, res) => {
     var _a, _b, _c, _d, _e;
     try {
-        const course = (_a = req.body.course) === null || _a === void 0 ? void 0 : _a.trim();
+        let course = (_a = req.body.course) === null || _a === void 0 ? void 0 : _a.trim();
         const subject = (_b = req.body.subject) === null || _b === void 0 ? void 0 : _b.trim();
         const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim();
         const category = (_d = req.body.category) === null || _d === void 0 ? void 0 : _d.trim();
         const topics = (_e = req.body) === null || _e === void 0 ? void 0 : _e.topic; // array of topics
         const userId = req.user.id;
+        // Resolve mdcatNums combo course to actual DB course per subject
+        if (course === 'mdcatNums') {
+            if (subject === 'logic') {
+                course = 'mdcat';
+            }
+            else {
+                course = 'nums';
+            }
+        }
         let matchCriteria = { course, subject, chapter };
         // Get user progress once
         const userProgress = await UserProgress.findOne({ userId }).select('solved wrong');

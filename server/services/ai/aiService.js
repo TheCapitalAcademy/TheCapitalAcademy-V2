@@ -50,35 +50,34 @@ ${formattedOptions}
 **Correct Answer:** ${correctLabel}) ${correctText}
 
 **Task:** 
-Provide a clear, step-by-step explanation of why option ${correctLabel} is correct. Your explanation should:
-1. Be concise (2-3 sentences or a brief paragraph)
-2. Explain the underlying concept
-3. Show the reasoning process
-4. Be appropriate for ${difficulty} difficulty level
-5. Avoid unnecessary jargon but maintain accuracy
-6. Be safe and educational for all audiences
+Provide a BRIEF, clear explanation. Your explanation should:
+1. Be concise (2-3 sentences maximum per section)
+2. Focus on the key concept only
+3. Be appropriate for ${difficulty} difficulty level
+4. Avoid unnecessary details
 
 You must follow the following format:
 💡 Explanation:
-<2–4 concise sentences explaining why the correct option is correct>
+<2–3 concise sentences explaining why the correct option is correct>
 
 ❌ <Option text> (Option <letter>):
-<1 sentence explaining why this option is incorrect>
+<1 brief sentence explaining why this is incorrect>
 
 ❌ <Option text> (Option <letter>):
-<1 sentence explaining why this option is incorrect>
+<1 brief sentence explaining why this is incorrect>
 
 ❌ <Option text> (Option <letter>):
-<1 sentence explaining why this option is incorrect>
+<1 brief sentence explaining why this is incorrect>
 
 Rules:
+- Keep it SHORT and focused
 - Use factual, textbook-level explanations
-- No speculation
+- No speculation or elaboration
 - No markdown
 - No bullet points
 - Emojis must be exactly as shown
 
-Do not mention other options unless necessary for comparison. Focus on teaching the concept.`;
+Focus on teaching the core concept briefly.`;
     }
 
     async generateWithGemini(prompt) {
@@ -88,7 +87,7 @@ Do not mention other options unless necessary for comparison. Focus on teaching 
             model: 'gemini-2.5-flash', // Fast and cost-effective model
             generationConfig: {
                 temperature: 0.3,
-                maxOutputTokens: 1000,
+                maxOutputTokens: 800,
                 topP: 0.95,
                 topK: 40,
             },
@@ -158,7 +157,7 @@ Do not mention other options unless necessary for comparison. Focus on teaching 
             model: 'gemini-2.5-flash',
             generationConfig: {
                 temperature: 0.7,
-                maxOutputTokens: 1024,
+                maxOutputTokens: 2048,
                 topP: 0.95,
                 topK: 40,
             },

@@ -1,435 +1,435 @@
 export const bioTopicsNamesNums = {
     'cell & organelles': [
-        "cell theory & techniques used in cell biology",
-        "cell wall & cell membrane",
-        "endoplasmic reticulum & ribosomes",
-        "golgi apparatus, lysosomes",
-        "microbodies & vacuoles",
-        "mitochondria & plastids",
-        "centrioles, cytoskeleton, cilia & flagella",
-        "nucleus",
-        "prokaryotic cell vs eukaryotic cell",
-        "plant cell vs animal cell",
+        "Cell theory & techniques used in cell biology",
+        "Cell wall & cell membrane",
+        "Endoplasmic reticulum & ribosomes",
+        "Golgi apparatus, lysosomes",
+        "Microbodies & vacuoles",
+        "Mitochondria & plastids",
+        "Centrioles, cytoskeleton, cilia & flagella",
+        "Nucleus",
+        "Prokaryotic cell vs eukaryotic cell",
+        "Plant cell vs animal cell",
     ],
     'biological molecules': [
-        "protoplasm",
-        "importance of water",
-        "carbohydrates",
-        "proteins",
-        "lipids",
-        "nucleic acids",
-        "conjugated molecules"
+        "Protoplasm",
+        "Importance of water",
+        "Carbohydrates",
+        "Proteins",
+        "Lipids",
+        "Nucleic acids",
+        "Conjugated molecules"
     ],
     'enzymes': [
-        "characteristics of enzymes",
-        "enzyme structure",
-        "mechanism of enzyme action",
-        "factors affecting the rate of enzyme action",
-        "enzyme inhibition",
-        "classification and uses of enzymes"
+        "Characteristics of enzymes",
+        "Enzyme structure",
+        "Mechanism of enzyme action",
+        "Factors affecting the rate of enzyme action",
+        "Enzyme inhibition",
+        "Classification and uses of enzymes"
     ],
     'bioenergetics': [
-        "photosynthesis",
-        "cellular respiration",
-        "photorespiration & c4 cycle"
+        "Photosynthesis",
+        "Cellular respiration",
+        "Photorespiration & C4 cycle"
     ],
     'acellular life': [
-        "introduction & classification",
-        "structure & parasitic nature of viruses",
-        "life cycle of bacteriophage & hiv",
-        "viral diseases",
-        "prions & viroids"
+        "Introduction & classification",
+        "Structure & parasitic nature of viruses",
+        "Life cycle of bacteriophage & HIV",
+        "Viral diseases",
+        "Prions & viroids"
     ],
     'prokaryotes': [
-        "taxonomic classification",
-        "archaebacteria vs bacteria",
-        "classification of bacteria",
-        "cyanobacteria",
-        "structure of bacterial cell",
-        "nutrition & respiration in bacteria",
-        "growth & reproduction",
-        "importance & control of bacteria"
+        "Taxonomic classification",
+        "Archaebacteria vs bacteria",
+        "Classification of bacteria",
+        "Cyanobacteria",
+        "Structure of bacterial cell",
+        "Nutrition & respiration in bacteria",
+        "Growth & reproduction",
+        "Importance & control of bacteria"
     ],
     'kingdom animalia': [
-        "classification of animals",
-        "phylum porifera & cnidaria",
-        "phylum platyhelminthes & aschelminthes",
-        "phylum mollusca & annelida",
-        "phylum arthropoda & echinodermata",
-        "hemichordata & chordata",
-        "class chondrichthyes & osteichthyes",
-        "class amphibia & reptilia",
-        "class aves & mammalia"
+        "Classification of animals",
+        "Phylum porifera & cnidaria",
+        "Phylum platyhelminthes & aschelminthes",
+        "Phylum mollusca & annelida",
+        "Phylum arthropoda & echinodermata",
+        "Hemichordata & chordata",
+        "Class chondrichthyes & osteichthyes",
+        "Class amphibia & reptilia",
+        "Class aves & mammalia"
     ],
     'life process in plants': [
-        "nutrition in plants",
-        "gaseous exchange in plants & stomata",
-        "structure of xylem & phloem",
-        "functions of xylem & phloem",
-        "homeostasis in plants",
-        "support in plants",
-        "growth & development in plants",
-        "photoperiodism & vernalization"
+        "Nutrition in plants",
+        "Gaseous exchange in plants & stomata",
+        "Structure of xylem & phloem",
+        "Functions of xylem & phloem",
+        "Homeostasis in plants",
+        "Support in plants",
+        "Growth & development in plants",
+        "Photoperiodism & vernalization"
     ],
     'digestion': [
-        "parts of digestive system",
-        "oral cavity & oesophagus",
-        "stomach",
-        "small intestine",
-        "liver, pancreas & gallbladder",
-        "large intestine",
-        "disorders of digestive system"
+        "Parts of digestive system",
+        "Oral cavity & oesophagus",
+        "Stomach",
+        "Small intestine",
+        "Liver, pancreas & gallbladder",
+        "Large intestine",
+        "Disorders of digestive system"
     ],
     'circulation': [
-        "introduction",
-        "structure of heart",
-        "cardiac cycle & ecg",
-        "blood vessels & vascular pathway",
-        "rate of blood flow & blood pressure",
-        "cvs diseases",
-        "lymphatic system of man"
+        "Introduction",
+        "Structure of heart",
+        "Cardiac cycle & ECG",
+        "Blood vessels & vascular pathway",
+        "Rate of blood flow & blood pressure",
+        "CVS diseases",
+        "Lymphatic system of man"
     ],
     'immunity': [
-        "first & second line of defense",
-        "third line of defense",
-        "types of acquired immunity",
-        "disorders of immune system"
+        "First & second line of defense",
+        "Third line of defense",
+        "Types of acquired immunity",
+        "Disorders of immune system"
     ],
     'respiration': [
-        "introduction",
-        "respiratory system",
-        "mechanism & control of breathing & respiratory volumes",
-        "gaseous transport & respiratory pigments",
-        "respiratory disorders"
+        "Introduction",
+        "Respiratory system",
+        "Mechanism & control of breathing & respiratory volumes",
+        "Gaseous transport & respiratory pigments",
+        "Respiratory disorders"
     ],
     'homeostasis': [
-        "mechanism of homeostasis",
-        "osmoregulation & excretion",
-        "excretory system of man",
-        "disorders of urinary tract",
-        "dialysis & kidney transplant",
-        "thermoregulation"
+        "Mechanism of homeostasis",
+        "Osmoregulation & excretion",
+        "Excretory system of man",
+        "Disorders of urinary tract",
+        "Dialysis & kidney transplant",
+        "Thermoregulation"
     ],
     'support & movement': [
-        "human skeleton & its division",
-        "joints & their injuries",
-        "disorders of skeletal system",
-        "muscles",
-        "movement of skeleton"
+        "Human skeleton & its division",
+        "Joints & their injuries",
+        "Disorders of skeletal system",
+        "Muscles",
+        "Movement of skeleton"
     ],
     'nervous coordination': [
-        "nervous vs chemical coordination",
-        "elements of nervous system",
-        "reflex arc and reflex action",
-        "nerve impulse",
-        "synapse",
-        "central nervous system",
-        "peripheral nervous system & sensory receptors",
-        "disorders of nervous system & diagnostic tests",
-        "effect of drugs on nervous system"
+        "Nervous vs chemical coordination",
+        "Elements of nervous system",
+        "Reflex arc and reflex action",
+        "Nerve impulse",
+        "Synapse",
+        "Central nervous system",
+        "Peripheral nervous system & sensory receptors",
+        "Disorders of nervous system & diagnostic tests",
+        "Effect of drugs on nervous system"
     ],
     'chemical coordination': [
-        "introduction",
-        "neurosecretory role of hypothalamus",
-        "pituitary gland",
-        "thyroid & parathyroid glands",
-        "pancreas & adrenal gland",
-        "gonads & other endocrine glands",
-        "feedback mechanism"
+        "Introduction",
+        "Neurosecretory role of hypothalamus",
+        "Pituitary gland",
+        "Thyroid & parathyroid glands",
+        "Pancreas & adrenal gland",
+        "Gonads & other endocrine glands",
+        "Feedback mechanism"
     ],
     'behavior': [
-        "introduction",
-        "innate behavior",
-        "learning behavior",
-        "social behavior"
+        "Introduction",
+        "Innate behavior",
+        "Learning behavior",
+        "Social behavior"
     ],
     'reproduction': [
-        "male reproductive system",
-        "female reproductive system",
-        "female reproductive cycle",
-        "disorders of reproductive system"
+        "Male reproductive system",
+        "Female reproductive system",
+        "Female reproductive cycle",
+        "Disorders of reproductive system"
     ],
     'development & aging': [
-        "embryonic development",
-        "control of development",
-        "human embryonic development",
-        "birth & nursing",
-        "aging"
+        "Embryonic development",
+        "Control of development",
+        "Human embryonic development",
+        "Birth & nursing",
+        "Aging"
     ],
     'inheritance': [
-        "introduction",
-        "mendelian laws",
-        "dominance relations",
-        "blood group systems",
-        "continuous variations & epistasis",
-        "gene linkage & sex determination",
-        "sex linkage & disorders"
+        "Introduction",
+        "Mendelian laws",
+        "Dominance relations",
+        "Blood group systems",
+        "Continuous variations & epistasis",
+        "Gene linkage & sex determination",
+        "Sex linkage & disorders"
     ],
     'chromosome & dna': [
-        "history",
-        "chromosomes & genes",
-        "cell cycle",
-        "dna as hereditary material",
-        "dna replication",
-        "gene expression",
-        "regulation of gene expression",
-        "mutations"
+        "History",
+        "Chromosomes & genes",
+        "Cell cycle",
+        "DNA as hereditary material",
+        "DNA replication",
+        "Gene expression",
+        "Regulation of gene expression",
+        "Mutations"
     ],
     'evolution': [
-        "introduction",
-        "evolution of prokaryotes & eukaryotes",
-        "lamarckism",
-        "darwinism",
-        "hardy-weinberg theorem",
-        "genetic drift & speciation"
+        "Introduction",
+        "Evolution of prokaryotes & eukaryotes",
+        "Lamarckism",
+        "Darwinism",
+        "Hardy-Weinberg theorem",
+        "Genetic drift & speciation"
     ]
 };
 
 
 export const chemistryTopicsNamesNums = {
     'fundamentals of chemistry': [
-        "basic concepts",
-        "stoichiometric calculations",
-        "access & limiting reactant",
-        "theoretical & actual yield"
+        "Basic concepts",
+        "Stoichiometric calculations",
+        "Access & limiting reactant",
+        "Theoretical & actual yield"
     ],
     'atomic structure': [
-        "discharge tube experiments",
-        "discovery of neutrons & nucleus",
-        "bohr atomic model & applications",
-        "plank's quantum theory",
-        "x-rays, de-broglie hypothesis & uncertainty principle",
-        "quantum numbers"
+        "Discharge tube experiments",
+        "Discovery of neutrons & nucleus",
+        "Bohr atomic model & applications",
+        "Plank's quantum theory",
+        "X-rays, de-Broglie hypothesis & uncertainty principle",
+        "Quantum numbers"
     ],
     'chemical bonding': [
-        "vsepr theory",
-        "vbt theory",
-        "hybridization",
-        "mo theory",
-        "chemical bonds & their properties",
+        "VSEPR theory",
+        "VBT theory",
+        "Hybridization",
+        "MO theory",
+        "Chemical bonds & their properties",
         "Atomic size, Shielding Effect & Electronegativity",
         "Ionization Energy & Electron Affinity",
     ],
     'gases': [
-        "kinetic molecular theory of gases and its applications",
-        "gaseous laws",
-        "ideal gas equation & its correction",
-        "dalton's law & graham's law",
-        "liquification of gases"
+        "Kinetic molecular theory of gases and its applications",
+        "Gaseous laws",
+        "Ideal gas equation & its correction",
+        "Dalton's law & Graham's law",
+        "Liquification of gases"
     ],
     'liquids': [
-        "kinetic molecular theory of liquids",
-        "intermolecular forces",
-        "properties of liquids",
-        "hydrogen bonding",
-        "energetics of phase changes"
+        "Kinetic molecular theory of liquids",
+        "Intermolecular forces",
+        "Properties of liquids",
+        "Hydrogen bonding",
+        "Energetics of phase changes"
     ],
     'solids': [
-        "kinetic molecular theory of solids",
-        "types of solids",
-        "properties of crystalline solids",
-        "crystal lattice"
+        "Kinetic molecular theory of solids",
+        "Types of solids",
+        "Properties of crystalline solids",
+        "Crystal lattice"
     ],
     'chemical equilibrium': [
-        "dynamic equilibrium & kc",
-        "kp, kn & kx",
-        "types of equilibrium",
-        "way to recognize equilibrium & applications of the equilibrium constant",
-        "factors affecting equilibrium & haber process",
-        "solubility product & common ion effect"
+        "Dynamic equilibrium & Kc",
+        "Kp, Kn & Kx",
+        "Types of equilibrium",
+        "Way to recognize equilibrium & applications of the equilibrium constant",
+        "Factors affecting equilibrium & Haber process",
+        "Solubility product & common ion effect"
     ],
     'acids, bases & salts': [
-        "introduction",
-        "bronsted lowery theory",
-        "strength of acids & bases",
-        "lewis concept & buffers",
-        "salt hydrolysis"
+        "Introduction",
+        "Bronsted Lowery theory",
+        "Strength of acids & bases",
+        "Lewis concept & buffers",
+        "Salt hydrolysis"
     ],
     'chemical kinetics': [
-        "rates of reactions",
-        "rate law, rate equation & order of reaction",
-        "factors affecting the rate of reaction",
-        "reaction mechanism & rate determining step",
-        "collision theory & catalysis"
+        "Rates of reactions",
+        "Rate law, rate equation & order of reaction",
+        "Factors affecting the rate of reaction",
+        "Reaction mechanism & rate determining step",
+        "Collision theory & catalysis"
     ],
     'thermochemistry': [
-        "introduction",
-        "endothermic vs exothermic reactions",
-        "heat of reaction & internal energy",
-        "first law of thermodynamics",
-        "standard states & standard enthalpy changes",
-        "heat capacity & calorimetry",
-        "hess's law & born haber cycle"
+        "Introduction",
+        "Endothermic vs exothermic reactions",
+        "Heat of reaction & internal energy",
+        "First law of thermodynamics",
+        "Standard states & standard enthalpy changes",
+        "Heat capacity & calorimetry",
+        "Hess's law & Born Haber cycle"
     ],
     'electrochemistry': [
-        "oxidation-reduction concepts",
-        "electrode, electrode potential & electrochemical series",
-        "types of electrochemical cells",
-        "corrosion & its prevention & electroplating"
+        "Oxidation-reduction concepts",
+        "Electrode, electrode potential & electrochemical series",
+        "Types of electrochemical cells",
+        "Corrosion & its prevention & electroplating"
     ],
     's & p block elements': [
-        "period iii elements",
-        "group i-a elements",
-        "group ii-a elements",
-        "group iv-a elements",
-        "group vii-a elements"
+        "Period III elements",
+        "Group I-A elements",
+        "Group II-A elements",
+        "Group IV-A elements",
+        "Group VII-A elements"
     ],
     'transition elements': [
-        "introduction & general features",
-        "coordination compounds"
+        "Introduction & general features",
+        "Coordination compounds"
     ],
     'organic chemistry': [
-        "introduction",
-        "sources & uses of organic compounds",
-        "allotropes of carbon",
-        "functional groups & homologous series",
-        "detection of elements in organic compounds"
+        "Introduction",
+        "Sources & uses of organic compounds",
+        "Allotropes of carbon",
+        "Functional groups & homologous series",
+        "Detection of elements in organic compounds"
     ],
     'hydrocarbons': [
-        "types of hydrocarbons",
-        "alkanes & cycloalkanes",
-        "alkenes",
-        "alkynes",
-        "isomerism",
-        "benzene"
+        "Types of hydrocarbons",
+        "Alkanes & cycloalkanes",
+        "Alkenes",
+        "Alkynes",
+        "Isomerism",
+        "Benzene"
     ],
     'alkyl halides': [
-        "introduction & preparation of alkyl halides",
-        "alkyl halide reactions",
-        "grignard's reagent",
-        "amines"
+        "Introduction & preparation of alkyl halides",
+        "Alkyl halide reactions",
+        "Grignard's reagent",
+        "Amines"
     ],
     'alcohols, phenols & ethers': [
-        "introduction & preparation of alcohols",
-        "reactions of alcohol",
-        "phenols",
-        "ethers"
+        "Introduction & preparation of alcohols",
+        "Reactions of alcohol",
+        "Phenols",
+        "Ethers"
     ],
     'aldehydes & ketones': [
-        "introduction of aldehydes & ketones",
-        "preparation of aldehydes & ketones",
-        "reactions of aldehydes & ketones"
+        "Introduction of aldehydes & ketones",
+        "Preparation of aldehydes & ketones",
+        "Reactions of aldehydes & ketones"
     ],
     'carboxylic acids': [
-        "introduction & preparation of carboxylic acids",
-        "reactions of carboxylic acids",
-        "reactions of carboxylic acid derivatives"
+        "Introduction & preparation of carboxylic acids",
+        "Reactions of carboxylic acids",
+        "Reactions of carboxylic acid derivatives"
     ],
     'biochemistry': [
-        "carbohydrates",
-        "proteins & enzymes",
-        "lipids",
-        "nucleic acids",
-        "minerals"
+        "Carbohydrates",
+        "Proteins & enzymes",
+        "Lipids",
+        "Nucleic acids",
+        "Minerals"
     ]
 };
 
 
 export const physicsTopicsNamesNums = {
     'force & motion': [
-        "introduction",
-        "physical quantities related to motion",
-        "equations of uniform motion & newton's laws of motion",
-        "linear momentum & collisions",
-        "projectile motion"
+        "Introduction",
+        "Physical quantities related to motion",
+        "Equations of uniform motion & Newton's laws of motion",
+        "Linear momentum & collisions",
+        "Projectile motion"
     ],
     'work & energy': [
-        "work done",
-        "energy & power & efficiency",
-        "absolute potential energy",
-        "sources of energy"
+        "Work done",
+        "Energy & power & efficiency",
+        "Absolute potential energy",
+        "Sources of energy"
     ],
     'rotational motion': [
-        "angular motion & its relations",
-        "centripetal force and acceleration",
-        "torque & angular momentum",
-        "conservation of angular momentum",
-        "kinetic energy of rotation",
-        "real & apparent weight, free fall & artificial satellites"
+        "Angular motion & its relations",
+        "Centripetal force and acceleration",
+        "Torque & angular momentum",
+        "Conservation of angular momentum",
+        "Kinetic energy of rotation",
+        "Real & apparent weight, free fall & artificial satellites"
     ],
     'oscillations': [
-        "introduction & shm",
-        "mass spring system & simple pendulum",
-        "resonance",
-        "waveform of shm, phase & damped oscillations"
+        "Introduction & SHM",
+        "Mass spring system & simple pendulum",
+        "Resonance",
+        "Waveform of SHM, phase & damped oscillations"
     ],
     'waves': [
-        "periodic & progressive waves",
-        "classification of progressive waves",
-        "speed of sound",
-        "interference of waves, beats & reflection of waves",
-        "stationary waves",
-        "resonance of air column & organ pipes",
-        "ultrasonic waves"
+        "Periodic & progressive waves",
+        "Classification of progressive waves",
+        "Speed of sound",
+        "Interference of waves, beats & reflection of waves",
+        "Stationary waves",
+        "Resonance of air column & organ pipes",
+        "Ultrasonic waves"
     ],
     'thermodynamics': [
-        "heat, work and internal energy",
-        "thermodynamics system",
-        "first law of thermodynamics",
-        "molar specific heat of a gas",
-        "second law of thermodynamics",
-        "heat engine, refrigerator & entropy"
+        "Heat, work and internal energy",
+        "Thermodynamics system",
+        "First law of thermodynamics",
+        "Molar specific heat of a gas",
+        "Second law of thermodynamics",
+        "Heat engine, refrigerator & entropy"
     ],
     'electrostatics': [
-        "coulomb's law & electric field & its intensity",
-        "applications of electrostatics",
-        "electric flux & gauss's law & its applications",
-        "electric potential & potential gradient",
-        "capacitor",
-        "electric polarization"
+        "Coulomb's law & electric field & its intensity",
+        "Applications of electrostatics",
+        "Electric flux & Gauss's law & its applications",
+        "Electric potential & potential gradient",
+        "Capacitor",
+        "Electric polarization"
     ],
     'current electricity': [
-        "steady current & drift velocity",
-        "ohm's law, electrical resistance & resistivity",
-        "wire-wound variable resistors & thermistors",
-        "emf, internal resistance & electric power",
-        "thermocouples & resistance thermometers",
-        "kirchoff's law",
-        "wheatstone bridge & potentiometer"
+        "Steady current & drift velocity",
+        "Ohm's law, electrical resistance & resistivity",
+        "Wire-wound variable resistors & thermistors",
+        "EMF, internal resistance & electric power",
+        "Thermocouples & resistance thermometers",
+        "Kirchoff's law",
+        "Wheatstone bridge & potentiometer"
     ],
     'electromagnetism': [
-        "magnetic field, magnetic force & magnetic flux",
-        "ampere's law & current carrying solenoid",
-        "motion of a charged particle",
-        "torque on a current carrying coil & mri",
-        "galvanometer, voltmeter & ammeter",
-        "multimeters"
+        "Magnetic field, magnetic force & magnetic flux",
+        "Ampere's law & current carrying solenoid",
+        "Motion of a charged particle",
+        "Torque on a current carrying coil & MRI",
+        "Galvanometer, voltmeter & ammeter",
+        "Multimeters"
     ],
     'electromagnetic induction': [
-        "introduction, faraday's law & lenz's law",
-        "induced emf & eddy currents",
-        "ac generators, ac motor",
-        "transformers"
+        "Introduction, Faraday's law & Lenz's law",
+        "Induced EMF & eddy currents",
+        "AC generators, AC motor",
+        "Transformers"
     ],
     'electronics': [
-        "semiconductors & their types",
-        "pn junction",
-        "rectification",
-        "optoelectronics junction devices"
+        "Semiconductors & their types",
+        "PN junction",
+        "Rectification",
+        "Optoelectronics junction devices"
     ],
     'dawn of modern physics': [
-        "theory of relativity & its consequences",
-        "blackbody radiation & quantum theory",
-        "photoelectric effect & its applications",
-        "compton's effect, pair production & pair annihilation",
-        "wave nature of particles",
-        "electron microscope & uncertainty principle"
+        "Theory of relativity & its consequences",
+        "Blackbody radiation & quantum theory",
+        "Photoelectric effect & its applications",
+        "Compton's effect, pair production & pair annihilation",
+        "Wave nature of particles",
+        "Electron microscope & uncertainty principle"
     ],
     'atomic spectra': [
-        "introduction & spectrum of hydrogen atom",
-        "bohr's model & energy level diagram",
-        "de-broglie waves & excitation & ionization potential",
-        "inner shell transition & x-rays",
-        "lasers"
+        "Introduction & spectrum of hydrogen atom",
+        "Bohr's model & energy level diagram",
+        "De-Broglie waves & excitation & ionization potential",
+        "Inner shell transition & X-rays",
+        "Lasers"
     ],
     'nuclear physics': [
-        "atomic nucleus & mass spectrograph",
-        "mass defect and binding energy",
-        "radioactivity",
-        "half life & rate of decay",
-        "interaction of radiations with matter",
-        "nuclear reactions & nuclear reactors",
-        "radiation exposure",
-        "building blocks of matter"
+        "Atomic nucleus & mass spectrograph",
+        "Mass defect and binding energy",
+        "Radioactivity",
+        "Half life & rate of decay",
+        "Interaction of radiations with matter",
+        "Nuclear reactions & nuclear reactors",
+        "Radiation exposure",
+        "Building blocks of matter"
     ]
 };

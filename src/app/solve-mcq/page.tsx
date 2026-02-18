@@ -73,7 +73,7 @@ const page = async ({ searchParams }) => {
     return (
         <div>
             {course === "trial" && <FreeTrialTopBar isFreeTrial={course === "trial"} />}
-            <Mcqs isSeries={type == "series"} subject={subject} chapter={chapter} mcqData={data} />
+            <Mcqs isSeries={type == "series"} subject={subject} chapter={chapter} topic={topic} mcqData={data} />
         </div>
     )
 }
