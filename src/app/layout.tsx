@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import './global.css'
 import GlobalProvider from './GlobalProvider'
 import { Toaster } from 'react-hot-toast'
@@ -65,8 +66,11 @@ export const metadata = {
     title: siteMetadata.title,
     images: [siteMetadata.socialBanner],
   },
+  alternates: {
+    canonical: siteMetadata.siteUrl,
+  },
   other: {
-    "google-site-verification": "n1hnf0eSYURCqVqf47WVuvFxwQ2fNYpsVMIMp6ApGr4",
+    "google-site-verification": "3meUMtRdkL251La5YOyV0-pnDeBxqK0Y0rN5w-4hj5E",
   },
 };
 
@@ -82,6 +86,29 @@ export default function RootLayout({
     <GlobalProvider>
       <html lang="en">
         <body className={inter.className}>
+          {/* Google Tag Manager (noscript) */}
+          <noscript>
+            <iframe 
+              src="https://www.googletagmanager.com/ns.html?id=GTM-MD2RSR59"
+              height="0" 
+              width="0" 
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
+          {/* End Google Tag Manager (noscript) */}
+          
+          {/* Google Tag Manager */}
+          <Script id="google-tag-manager" strategy="afterInteractive">
+            {`
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-MD2RSR59');
+            `}
+          </Script>
+          {/* End Google Tag Manager */}
+          
           <HeroUIProvider>
             <Toaster />
             {children}

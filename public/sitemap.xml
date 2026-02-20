@@ -1,4 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<sitemap><loc>https://thecapitalacademy.online/sitemap-0.xml</loc></sitemap>
-</sitemapindex>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://thecapitalacademy.online/</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/calculator</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/series</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/signin</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/signup</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/checkout?course=mdcat</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/checkout?course=nums</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/checkout?course=mdcat%2Bnums</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/about</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/contact</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://thecapitalacademy.online/privacy-policy</loc>
+  <lastmod>2026-02-20T11:28:28+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
