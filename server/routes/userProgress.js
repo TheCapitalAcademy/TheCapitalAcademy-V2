@@ -12,8 +12,8 @@ const progressRouter = express.Router();
 progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req, res) => {
     let course = req.body.course?.trim();
     const subject = req.body.subject?.trim();
-    const chapter = req.body.chapter?.trim();
-    const topic = req.body.topic?.trim();
+    const chapter = req.body.chapter?.trim().toLowerCase(); // Normalize to lowercase
+    const topic = req.body.topic?.trim().toLowerCase(); // Normalize to lowercase
     let category = req.body.category?.trim(); // past, normal, solved, unsolved, wrong, all
     const userId = req.user.id;
     console.log("category", category)
@@ -32,7 +32,19 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
         category = "all"
     }
 
+    // Trial users can only access the first chapter of each subject
     if (course == "trial") {
+        const trialAllowedChapters = {
+            biology: 'cell & organelles',
+            chemistry: 'fundamentals of chemistry',
+            physics: 'force & motion',
+            english: 'noun',
+            logic: 'number & letter series'
+        };
+        const allowedChapter = trialAllowedChapters[subject];
+        if (allowedChapter && chapter !== allowedChapter) {
+            return res.status(403).json({ message: 'Trial access is limited to the first chapter only. Please upgrade to access all chapters.' });
+        }
         course = 'mdcat';
     }
 
@@ -49,8 +61,12 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
 
     try {
         if (subject !== 'mock') {
+            // Now chapter and topic are lowercase, matching the DB format
             const queryCriteria = { course, subject, chapter };
-            if (subject !== 'english' && subject !== 'logic') queryCriteria.topic = topic;
+            
+            if (subject !== 'english' && subject !== 'logic') {
+                queryCriteria.topic = topic;
+            }
 
             const pipeline = [{ $match: queryCriteria }];
             let excludedIds = [];

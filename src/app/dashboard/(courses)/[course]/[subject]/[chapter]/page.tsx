@@ -98,7 +98,7 @@ const Page = ({ params }: PageProps) => {
   }, [category, topics]);
 
   useEffect(() => {
-    const topicData = mcqCount.find((e) => e.topic === selectedTopic || ["english", "logic"].includes(e.subject))
+    const topicData = mcqCount.find((e) => e.topic?.toLowerCase() === selectedTopic?.toLowerCase() || ["english", "logic"].includes(e.subject))
     setIsMcqAvailable(topicData?.count > 0)
   }, [selectedTopic, mcqCount])
 

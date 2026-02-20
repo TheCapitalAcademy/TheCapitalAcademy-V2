@@ -10,8 +10,8 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
     var _a, _b, _c, _d, _e, _f, _g, _h;
     let course = (_a = req.body.course) === null || _a === void 0 ? void 0 : _a.trim();
     const subject = (_b = req.body.subject) === null || _b === void 0 ? void 0 : _b.trim();
-    const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim();
-    const topic = (_d = req.body.topic) === null || _d === void 0 ? void 0 : _d.trim();
+    const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim().toLowerCase(); // Normalize to lowercase
+    const topic = (_d = req.body.topic) === null || _d === void 0 ? void 0 : _d.trim().toLowerCase(); // Normalize to lowercase
     let category = (_e = req.body.category) === null || _e === void 0 ? void 0 : _e.trim(); // past, normal, solved, unsolved, wrong, all
     const userId = req.user.id;
     console.log("category", category);
@@ -27,7 +27,19 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
         limit = 2;
         category = "all";
     }
+    // Trial users can only access the first chapter of each subject
     if (course == "trial") {
+        const trialAllowedChapters = {
+            biology: 'cell & organelles',
+            chemistry: 'fundamentals of chemistry',
+            physics: 'force & motion',
+            english: 'noun',
+            logic: 'number & letter series'
+        };
+        const allowedChapter = trialAllowedChapters[subject];
+        if (allowedChapter && chapter !== allowedChapter) {
+            return res.status(403).json({ message: 'Trial access is limited to the first chapter only. Please upgrade to access all chapters.' });
+        }
         course = 'mdcat';
     }
     // Resolve mdcatNums combo course to actual DB course per subject
@@ -42,9 +54,11 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
     let mcqs = [];
     try {
         if (subject !== 'mock') {
+            // Now chapter and topic are lowercase, matching the DB format
             const queryCriteria = { course, subject, chapter };
-            if (subject !== 'english' && subject !== 'logic')
+            if (subject !== 'english' && subject !== 'logic') {
                 queryCriteria.topic = topic;
+            }
             const pipeline = [{ $match: queryCriteria }];
             let excludedIds = [];
             let includedIds = [];

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Button } from "@/components/ui/button"
@@ -76,9 +76,11 @@ const Header = ({ isActiveCourse }: HeaderProps) => {
         return;
       }
       setLoading(true)
-      if (!session.user) {
+      if (!session?.user) {
         toast.error("Please sign in to start your free trial.")
-        return redirect('/signin')
+        router.push('/signin')
+        setLoading(false)
+        return
       }
       const res = await Axios.post('/api/v1/purchase/trial')
       if (res.status !== 200) {

@@ -19,8 +19,8 @@ mcqRouter.post('/get', checkTrialStatus, asyncWrapper(async (req, res) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     const course = (_a = req.body.course) === null || _a === void 0 ? void 0 : _a.trim();
     const subject = (_b = req.body.subject) === null || _b === void 0 ? void 0 : _b.trim();
-    const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim();
-    const topic = (_d = req.body.topic) === null || _d === void 0 ? void 0 : _d.trim();
+    const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim().toLowerCase();
+    const topic = (_d = req.body.topic) === null || _d === void 0 ? void 0 : _d.trim().toLowerCase();
     const category = (_e = req.body.catagory) === null || _e === void 0 ? void 0 : _e.trim(); // past, normal, solved, unsolved
     const userId = (_f = req.body) === null || _f === void 0 ? void 0 : _f.userId;
     const isTrialActive = (_g = req === null || req === void 0 ? void 0 : req.user) === null || _g === void 0 ? void 0 : _g.isTrialActive;
@@ -173,16 +173,57 @@ mcqRouter.get('/search', asyncWrapper(async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 }));
+// Diagnostic endpoint to check what chapters/topics exist in DB
+mcqRouter.get('/diagnostic/:course/:subject', authUser, asyncWrapper(async (req, res) => {
+    try {
+        const { course, subject } = req.params;
+        // Get unique chapters for this course/subject
+        const chapters = await McqModel.distinct('chapter', { course, subject });
+        // Get sample topics for each chapter
+        const chapterData = [];
+        for (const chapter of chapters) {
+            const topics = await McqModel.distinct('topic', { course, subject, chapter });
+            const count = await McqModel.countDocuments({ course, subject, chapter });
+            chapterData.push({ chapter, topics, count });
+        }
+        res.json({
+            course,
+            subject,
+            totalMcqs: await McqModel.countDocuments({ course, subject }),
+            chapters: chapterData
+        });
+    }
+    catch (error) {
+        console.error('Diagnostic error:', error);
+        res.status(500).json({ error: error.message });
+    }
+}));
 //
 mcqRouter.post('/count', authUser, asyncWrapper(async (req, res) => {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     try {
         let course = (_a = req.body.course) === null || _a === void 0 ? void 0 : _a.trim();
         const subject = (_b = req.body.subject) === null || _b === void 0 ? void 0 : _b.trim();
-        const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim();
+        const chapter = (_c = req.body.chapter) === null || _c === void 0 ? void 0 : _c.trim().toLowerCase(); // Normalize to lowercase
         const category = (_d = req.body.category) === null || _d === void 0 ? void 0 : _d.trim();
-        const topics = (_e = req.body) === null || _e === void 0 ? void 0 : _e.topic; // array of topics
+        const topics = ((_f = (_e = req.body) === null || _e === void 0 ? void 0 : _e.topic) === null || _f === void 0 ? void 0 : _f.map(t => t.toLowerCase())) || []; // Normalize topics to lowercase
         const userId = req.user.id;
+        // Trial users can only access the first chapter of each subject
+        if (course === 'trial') {
+            const trialAllowedChapters = {
+                biology: 'cell & organelles',
+                chemistry: 'fundamentals of chemistry',
+                physics: 'force & motion',
+                english: 'noun',
+                logic: 'number & letter series'
+            };
+            const allowedChapter = trialAllowedChapters[subject];
+            if (allowedChapter && chapter !== allowedChapter) {
+                return res.status(403).json({ message: 'Trial access is limited to the first chapter only.' });
+            }
+        }
+        console.log('========== MCQ COUNT DEBUG ==========');
+        console.log('Received params (normalized):', { course, subject, chapter, category, topics, userId });
         // Resolve mdcatNums combo course to actual DB course per subject
         if (course === 'mdcatNums') {
             if (subject === 'logic') {
@@ -192,11 +233,26 @@ mcqRouter.post('/count', authUser, asyncWrapper(async (req, res) => {
                 course = 'nums';
             }
         }
+        // Now chapter and topics are lowercase, matching the DB format
         let matchCriteria = { course, subject, chapter };
+        // Check if ANY MCQs exist for this course/subject/chapter combination (without category filter)
+        const rawCount = await McqModel.countDocuments({ course, subject, chapter });
+        console.log(`Raw MCQ count in DB for {course: "${course}", subject: "${subject}", chapter: "${chapter}"}: ${rawCount}`);
+        // Get actual topic names from DB for this chapter
+        if (rawCount > 0) {
+            const actualTopics = await McqModel.distinct('topic', { course, subject, chapter });
+            console.log('Actual topics in DB:', actualTopics);
+            console.log('Searching for topics (normalized):', topics);
+            console.log('Topics match check:', topics.map(t => ({
+                requested: t,
+                exists: actualTopics.includes(t)
+            })));
+        }
         // Get user progress once
         const userProgress = await UserProgress.findOne({ userId }).select('solved wrong');
         const solvedIds = (userProgress === null || userProgress === void 0 ? void 0 : userProgress.solved) || [];
         const wrongIds = (userProgress === null || userProgress === void 0 ? void 0 : userProgress.wrong) || [];
+        console.log(`User progress: ${solvedIds.length} solved, ${wrongIds.length} wrong`);
         // Topic condition (if not english or logic)
         if (subject !== 'english' && subject !== 'logic' && subject !== 'mock') {
             matchCriteria.topic = { $in: topics };
@@ -230,6 +286,7 @@ mcqRouter.post('/count', authUser, asyncWrapper(async (req, res) => {
                 matchCriteria._id = { $in: wrongIds };
             }
         }
+        console.log('Final match criteria:', JSON.stringify(matchCriteria, null, 2));
         // ================== Aggregate counts ===================
         const data = await McqModel.aggregate([
             { $match: matchCriteria },
@@ -240,6 +297,8 @@ mcqRouter.post('/count', authUser, asyncWrapper(async (req, res) => {
                 }
             }
         ]);
+        console.log('Aggregation result:', data);
+        console.log('====================================');
         // Convert to usable format
         const topicCounts = data.reduce((acc, item) => {
             if (subject !== 'english' && subject !== 'logic') {

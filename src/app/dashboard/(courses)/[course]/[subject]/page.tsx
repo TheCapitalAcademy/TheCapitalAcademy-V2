@@ -80,7 +80,7 @@ const Page = async ({ params }) => {
                 </div>
                 <div className="flex flex-wrap gap-3 md:gap-4 justify-center w-full">
                     {chapters.map((ele, index) => (
-                        <Chapter course={course} subject={subject} chapter={ele.name} key={index} name={ele.name} img={ele.image} isLocked={ele.locked ?? false} />
+                        <Chapter course={course} subject={subject} chapter={ele.name} key={index} name={ele.name} img={ele.image} isLocked={course === 'trial' ? index !== 0 : (ele.locked ?? false)} />
                     ))}
                 </div>
             </div>
