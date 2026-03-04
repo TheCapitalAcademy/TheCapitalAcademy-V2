@@ -47,6 +47,16 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { toast } from "react-hot-toast"
 
+/**
+ * Preprocesses text to convert plain-parenthesis LaTeX like (\frac{...}) or (22.4,\text{L})
+ * into proper $...$ delimited math that MathJax can render.
+ * Only converts parentheses that contain LaTeX commands (backslash + letter).
+ */
+const preprocessLatex = (text: string): string => {
+  if (!text) return text;
+  return text.replace(/\(([^()]*\\[a-zA-Z][^()]*)\)/g, (_match, inner) => `$${inner}$`);
+};
+
 const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
   console.log(mcqData)
   const router = useRouter()
@@ -743,7 +753,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                         <Card className="bg-slate-50 border-l-4 border-l-blue-500">
                           <CardBody className="py-3 lg:py-4">
                             <MathJax dynamic inline className="text-sm lg:text-lg">
-                              {mcqs[index]?.question}
+                              {preprocessLatex(mcqs[index]?.question)}
                             </MathJax>
                           </CardBody>
                         </Card>
@@ -809,7 +819,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                         <MathJax dynamic
                                           className="pointer-events-none select-none text-sm lg:text-base flex-1"
                                         >
-                                          {option}
+                                          {preprocessLatex(option)}
                                         </MathJax>
                                         {isSelected && (
                                           <span className="ml-2">
@@ -877,7 +887,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                         inline
                                         className="text-sm lg:text-base leading-relaxed whitespace-pre-line"
                                       >
-                                        {mcqs[index]?.explain || "Explanation not available yet"}
+                                        {preprocessLatex(mcqs[index]?.explain) || "Explanation not available yet"}
                                       </MathJax>
                                       {mcqs[index]?.explain && mcqs[index]?.explain !== "Explanation not available yet" && (
                                         <div className="mt-4 pt-4 border-t border-green-200">
@@ -1253,7 +1263,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                         <div>
                           <span className="font-bold text-sm lg:text-base">Q:{i + 1}) </span>
                           <MathJax dynamic inline className="text-sm lg:text-base">
-                            {ele.question}
+                            {preprocessLatex(ele.question)}
                           </MathJax>
                         </div>
                       }
@@ -1279,7 +1289,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                   {alphabets[optionIndex]}
                                 </Chip>
                                 <MathJax dynamic inline className="text-sm lg:text-base">
-                                  {option}
+                                  {preprocessLatex(option)}
                                 </MathJax>
                               </div>
                             </div>
@@ -1317,7 +1327,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                         <div>
                           <p className="text-gray-600 mb-2 text-sm lg:text-base">Explanation:</p>
                           <MathJax dynamic className="whitespace-pre-line !text-sm lg:text-base" inline>
-                            {ele.explain || "Not available"}
+                            {preprocessLatex(ele.explain) || "Not available"}
                           </MathJax>
                         </div>
                       </div>
@@ -1341,7 +1351,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                 <div>
                                   <span className="font-bold text-sm lg:text-base">Q:{i + 1}) </span>
                                   <MathJax dynamic inline className="text-sm lg:text-base">
-                                    {ele.question}
+                                    {preprocessLatex(ele.question)}
                                   </MathJax>
                                 </div>
                               }
@@ -1353,7 +1363,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                   <div>
                                     <span className="font-bold text-sm lg:text-base">Q:{i + 1}) </span>
                                     <MathJax dynamic inline className="text-sm lg:text-base">
-                                      {ele.question}
+                                      {preprocessLatex(ele.question)}
                                     </MathJax>
                                   </div>
                                   <div className="space-y-2 mcq-option">
@@ -1374,7 +1384,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                             {alphabets[optionIndex]}
                                           </Chip>
                                           <MathJax dynamic inline className="text-sm lg:text-base">
-                                            {option}
+                                            {preprocessLatex(option)}
                                           </MathJax>
                                         </div>
                                       </div>
@@ -1410,7 +1420,7 @@ const Mcqs = ({ subject, chapter, topic, isSeries, mcqData }) => {
                                   <div>
                                     <p className="text-gray-600 mb-2 text-sm lg:text-base"> Explanation:</p>
                                     <MathJax dynamic className="whitespace-pre-line !text-sm lg:text-base" inline>
-                                      {ele.explain || "Not available"}
+                                      {preprocessLatex(ele.explain) || "Not available"}
                                     </MathJax>
                                   </div>
                                 </CardBody>

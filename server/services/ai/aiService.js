@@ -73,9 +73,10 @@ Rules:
 - Keep it SHORT and focused
 - Use factual, textbook-level explanations
 - No speculation or elaboration
-- No markdown
-- No bullet points
+- No markdown formatting (no bold **, no headers #, no bullet points)
 - Emojis must be exactly as shown
+- For any mathematical expressions, formulas, numbers with units, or chemical formulas, wrap them with dollar signs for inline math. For example: $22.4 \text{ L}$, $\frac{44.8}{22.4} = 2$, $H_2O$, $F = ma$
+- Always use LaTeX math notation with $...$ delimiters — never use raw LaTeX commands like \text or \frac outside of dollar-sign delimiters
 
 Focus on teaching the core concept briefly.`;
     }

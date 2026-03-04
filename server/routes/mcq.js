@@ -37,9 +37,6 @@ mcqRouter.post('/get', checkTrialStatus, asyncWrapper(async (req, res) => {
 
 
     let limit = 100;
-    if (isTrialActive && !isNums && !isMdcat) {
-        limit = 5;
-    }
 
 
     try {

@@ -131,9 +131,9 @@ const Page = ({ params }: PageProps) => {
 
   const categoryOptions = [
     { value: "unsolved", label: "Unsolved MCQ" },
-    { value: "wrong", label: "Wrong MCQ" },
-    { value: "solved", label: "Correct MCQ" },
-    { value: "past", label: "Past MCQ" },
+    { value: "wrong", label: "Incorrect Attempts" },
+    { value: "solved", label: "Correct Attempts" },
+    { value: "past", label: "Past Paper MCQs" },
     { value: "all", label: "All MCQ" },
   ]
 

@@ -24,11 +24,7 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
     const isMdcat = req.user?.isMdcat;
 
     let limit = 100;
-    limit = isTrialActive
-        ? (isMdcat || isNums ? 100 : 2)
-        : 100;
     if (course == "trial") {
-        limit = 2;
         category = "all"
     }
 

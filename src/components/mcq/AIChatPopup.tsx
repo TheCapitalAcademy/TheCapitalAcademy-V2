@@ -16,6 +16,7 @@ import {
   Spinner,
 } from "@heroui/react"
 import { MessageCircle, Send, Sparkles, X, Lightbulb } from "lucide-react"
+import { MathJax, MathJaxContext } from "better-react-mathjax"
 import Axios from "@/lib/Axios"
 import { toast } from "react-hot-toast"
 
@@ -29,6 +30,21 @@ interface AIChatPopupProps {
   onClose: () => void
   mcq: any
   mcqType: "MCQ" | "SeriesMCQ"
+}
+
+const mathJaxConfig = {
+  loader: { load: ["input/tex", "output/chtml", "[tex]/ams"] },
+  tex: {
+    packages: { "[+]": ["ams"] },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+  },
 }
 
 const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
@@ -163,6 +179,7 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
   }
 
   return (
+    <MathJaxContext version={3} config={mathJaxConfig}>
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
@@ -219,7 +236,7 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
                       <span className="text-xs font-medium text-blue-600">Capy AI</span>
                     </div>
                   )}
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <MathJax dynamic inline className="text-sm whitespace-pre-wrap">{message.content}</MathJax>
                 </div>
               </div>
             ))}
@@ -289,6 +306,7 @@ const AIChatPopup = ({ isOpen, onClose, mcq, mcqType }: AIChatPopupProps) => {
         </ModalFooter>
       </ModalContent>
     </Modal>
+    </MathJaxContext>
   )
 }
 
