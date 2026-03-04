@@ -126,7 +126,8 @@ ${userMessage}
 **Your Response:**
 Answer the student's question ONLY if it relates to this MCQ, its explanation, or the concept being tested. If off-topic, respond with: "I can only help with questions about this specific MCQ. Please ask about the question, options, or the concept being tested."
 
-Keep your response concise (3-5 sentences) and educational.`;
+Keep your response concise (3-5 sentences) and educational.
+For any mathematical expressions, formulas, numbers with units, or chemical formulas, wrap them with dollar signs for inline math. For example: $22.4 \text{ L}$, $\frac{44.8}{22.4} = 2$, $H_2O$. Always use LaTeX math notation with $...$ delimiters — never use raw LaTeX commands outside of dollar-sign delimiters.`;
 }
 /**
  * Check if AI response indicates off-topic query

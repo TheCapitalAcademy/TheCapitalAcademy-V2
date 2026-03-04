@@ -20,11 +20,7 @@ progressRouter.post('/get', authUser, checkTrialStatus, asyncWrapper(async (req,
     const isNums = (_g = req.user) === null || _g === void 0 ? void 0 : _g.isNums;
     const isMdcat = (_h = req.user) === null || _h === void 0 ? void 0 : _h.isMdcat;
     let limit = 100;
-    limit = isTrialActive
-        ? (isMdcat || isNums ? 100 : 2)
-        : 100;
     if (course == "trial") {
-        limit = 2;
         category = "all";
     }
     // Trial users can only access the first chapter of each subject

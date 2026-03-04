@@ -27,9 +27,6 @@ mcqRouter.post('/get', checkTrialStatus, asyncWrapper(async (req, res) => {
     const isNums = (_h = req === null || req === void 0 ? void 0 : req.user) === null || _h === void 0 ? void 0 : _h.isNums;
     const isMdcat = (_j = req === null || req === void 0 ? void 0 : req.user) === null || _j === void 0 ? void 0 : _j.isMdcat;
     let limit = 100;
-    if (isTrialActive && !isNums && !isMdcat) {
-        limit = 5;
-    }
     try {
         let mcqs = [];
         if (subject !== 'mock') {

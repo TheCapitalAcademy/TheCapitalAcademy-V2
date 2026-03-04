@@ -169,9 +169,10 @@ function buildCapyPrompt(userMessage, conversationHistory) {
 4. Provide examples or mnemonics ONLY when essential
 5. Be encouraging but concise
 6. Use markdown formatting (headings, bullet points, bold) for readability
-7. For complex topics: give a concise overview first, then key points
-8. Avoid unnecessary elaboration — prioritize clarity over completeness
-9. STRICTLY REFUSE to answer questions that are:
+7. For any mathematical expressions, formulas, numbers with units, or chemical formulas, wrap them with dollar signs for inline math. For example: $22.4 \\text{ L}$, $\\frac{44.8}{22.4} = 2$, $H_2O$. Always use LaTeX math notation with $...$ delimiters — never use raw LaTeX commands outside of dollar-sign delimiters
+8. For complex topics: give a concise overview first, then key points
+9. Avoid unnecessary elaboration — prioritize clarity over completeness
+10. STRICTLY REFUSE to answer questions that are:
    - Sexual, adult, or 18+ content
    - Related to violence, weapons, or harmful activities
    - About weather, sports scores, celebrity gossip, or other non-educational casual topics
