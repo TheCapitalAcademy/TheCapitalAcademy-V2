@@ -82,9 +82,6 @@ const userAIConfigSchema = new mongoose.Schema({
     
 }, { timestamps: true });
 
-// Index for efficient queries
-userAIConfigSchema.index({ userId: 1 });
-
 // Method to check if user has quota remaining
 userAIConfigSchema.methods.hasQuotaRemaining = function() {
     return this.tokenUsage.currentMonth < this.tokenQuota;
