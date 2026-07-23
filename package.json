@@ -20,9 +20,8 @@
     "@google/generative-ai": "^0.24.1",
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "2.7.6",
-    "@heroui/select": "2.4.15",
-    "@heroui/system": "2.4.15",
-    "@heroui/theme": "2.4.15",
+    "@heroui/system": "2.4.19",
+    "@heroui/theme": "2.4.19",
     "@hookform/resolvers": "^5.0.1",
     "@iconify/react": "^6.0.0",
     "@mui/icons-material": "^7.1.1",
@@ -96,12 +95,6 @@
     "ua-parser-js": "^2.0.3",
     "vaul": "^1.1.2",
     "zod": "^3.24.4"
-  },
-  "overrides": {
-    "@heroui/theme": "2.4.15",
-    "@heroui/system": "2.4.15",
-    "@heroui/select": "2.4.15",
-    "tailwindcss": "3.4.19"
   },
   "type": "module",
   "devDependencies": {
